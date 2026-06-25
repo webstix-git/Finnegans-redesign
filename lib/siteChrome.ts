@@ -70,7 +70,7 @@ export function renderHeader(activeSlug: string): string {
         </div>
         <div class="fw-site-nav-actions" style="flex:0 0 auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
           <a href="tel:+14178691500" class="fw-nav-phone" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none;color:var(--cream);font-family:Oswald,sans-serif;text-transform:uppercase;font-weight:500;font-size:14px;letter-spacing:.12em;padding:9px 14px;border-radius:2px;border:1px solid rgba(230,219,198,.5);transition:background .25s ease,border-color .25s ease;text-shadow:0 1px 9px rgba(0,0,0,.6);" style-hover="background:rgba(230,219,198,.12);border-color:var(--gold2);"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.62 10.79a15.91 15.91 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21c1.21.49 2.53.76 3.88.76a1 1 0 011 1V20a1 1 0 01-1 1C9.61 21 3 14.39 3 6a1 1 0 011-1h3.5a1 1 0 011 1c0 1.36.27 2.68.76 3.88a1 1 0 01-.21 1.11z"></path></svg>(417) 869-1500</a>
-          <a href="/#visit" class="fw-nav-cta" style="text-decoration:none;color:var(--cream);background:var(--brick);font-family:Oswald,sans-serif;text-transform:uppercase;font-weight:600;font-size:14px;letter-spacing:.14em;padding:10px 20px;border-radius:2px;border:1px solid var(--brick);transition:background .25s ease,color .25s ease,border-color .25s ease,transform .25s ease,box-shadow .25s ease;" style-hover="${BRICK_BTN_HOVER}">Reserve Now</a>
+          <a href="/contact-us" class="fw-nav-cta" style="text-decoration:none;color:var(--cream);background:var(--brick);font-family:Oswald,sans-serif;text-transform:uppercase;font-weight:600;font-size:14px;letter-spacing:.14em;padding:10px 20px;border-radius:2px;border:1px solid var(--brick);transition:background .25s ease,color .25s ease,border-color .25s ease,transform .25s ease,box-shadow .25s ease;" style-hover="${BRICK_BTN_HOVER}">Reserve Now</a>
         </div>
       </div>
     </nav>
@@ -126,9 +126,19 @@ export function renderFooter(): string {
           </div>
         </div>
 
+        <div class="fw-footer-hours-col">
+          <div style="font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.26em;font-size:11px;color:var(--gold2);margin-bottom:20px;">Hours</div>
+          <div class="fw-footer-hours" style="display:grid;grid-template-columns:auto auto;column-gap:16px;row-gap:2px;width:max-content;font-family:Montserrat,sans-serif;font-size:15px;">
+            <span style="color:var(--muted);">Mon</span>
+            <span style="color:var(--cream2);">Closed</span>
+            <span style="color:var(--muted);">Tue – Sun</span>
+            <span style="color:var(--cream2);">4 p.m. – Close</span>
+          </div>
+        </div>
+
         <div class="fw-footer-links">
           <div style="font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.26em;font-size:11px;color:var(--gold2);margin-bottom:20px;">Quick Links</div>
-          <div class="fw-footer-links-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:13px 28px;font-family:Montserrat,sans-serif;font-size:15px;">
+          <div class="fw-footer-links-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:13px 48px;font-family:Montserrat,sans-serif;font-size:15px;">
             <div style="display:grid;gap:13px;">
               ${footerQuickLink('/menu', 'Menu')}
               ${footerQuickLink('/promotions-and-events', 'Events')}
@@ -138,18 +148,8 @@ export function renderFooter(): string {
               ${footerQuickLink('/about-us', 'About Us')}
               ${footerQuickLink('/reviews', 'Reviews')}
               ${footerQuickLink('/faq', 'FAQs')}
-              ${footerQuickLink('/#visit', 'Visit')}
+              ${footerQuickLink('/contact-us', 'Contact Us')}
             </div>
-          </div>
-        </div>
-
-        <div class="fw-footer-hours-col" style="justify-self:end;">
-          <div style="font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.26em;font-size:11px;color:var(--gold2);margin-bottom:20px;">Hours</div>
-          <div class="fw-footer-hours" style="display:grid;grid-template-columns:auto auto;column-gap:16px;row-gap:2px;width:max-content;font-family:Montserrat,sans-serif;font-size:15px;">
-            <span style="color:var(--muted);">Mon</span>
-            <span style="color:var(--cream2);">Closed</span>
-            <span style="color:var(--muted);">Tue – Sun</span>
-            <span style="color:var(--cream2);">4 p.m. – Close</span>
           </div>
         </div>
 
