@@ -235,7 +235,9 @@ section#top > div:last-of-type {
 }
 
 .fw-footer-hours-col {
-  justify-self: start !important;
+  justify-self: center !important;
+  width: max-content;
+  text-align: left;
 }
 
 @media (max-width: 900px) {
