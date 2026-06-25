@@ -53,39 +53,89 @@ function setupContactForm() {
   return () => cleanups.forEach((fn) => fn());
 }
 
-function setupScrollHeader(logoSize: { scrolled: number; default: number }) {
+function setupMobileNav() {
+  const header = document.getElementById('fw-header');
+  const toggle = document.getElementById('fw-nav-toggle');
+  const panel = document.getElementById('fw-nav-panel');
+  if (!header || !toggle || !panel) return () => {};
+
+  const mq = window.matchMedia('(max-width: 991px)');
+
+  const closeMenu = () => {
+    header.classList.remove('fw-nav-open');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.setAttribute('aria-label', 'Open menu');
+    document.body.classList.remove('fw-nav-menu-open');
+    window.dispatchEvent(new Event('scroll'));
+  };
+
+  const openMenu = () => {
+    header.classList.add('fw-nav-open');
+    toggle.setAttribute('aria-expanded', 'true');
+    toggle.setAttribute('aria-label', 'Close menu');
+    document.body.classList.add('fw-nav-menu-open');
+    window.dispatchEvent(new Event('scroll'));
+  };
+
+  const onToggle = () => {
+    if (header.classList.contains('fw-nav-open')) closeMenu();
+    else openMenu();
+  };
+
+  const onResize = () => {
+    if (!mq.matches) closeMenu();
+  };
+
+  const onLinkClick = (e: Event) => {
+    if ((e.target as HTMLElement).closest('a')) closeMenu();
+  };
+
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') closeMenu();
+  };
+
+  toggle.addEventListener('click', onToggle);
+  panel.addEventListener('click', onLinkClick);
+  mq.addEventListener('change', onResize);
+  document.addEventListener('keydown', onKey);
+
+  return () => {
+    toggle.removeEventListener('click', onToggle);
+    panel.removeEventListener('click', onLinkClick);
+    mq.removeEventListener('change', onResize);
+    document.removeEventListener('keydown', onKey);
+    closeMenu();
+  };
+}
+
+function setupScrollHeader() {
   const h = document.getElementById('fw-header');
-  const logo = document.getElementById('fw-logo') as HTMLElement | null;
   if (!h) return () => {};
 
   const onScroll = () => {
+    const menuOpen = h.classList.contains('fw-nav-open');
     const scrolled = (window.scrollY || document.documentElement.scrollTop || 0) > 70;
-    if (scrolled) {
+    if (scrolled || menuOpen) {
+      h.classList.add('fw-header-scrolled');
       h.style.background = 'rgba(21,15,12,.97)';
       h.style.backdropFilter = 'blur(10px)';
       (h.style as CSSStyleDeclaration & { webkitBackdropFilter?: string }).webkitBackdropFilter =
         'blur(10px)';
       h.style.boxShadow = '0 8px 26px rgba(0,0,0,.4)';
-      if (logo) {
-        logo.style.width = `${logoSize.scrolled}px`;
-        logo.style.height = `${logoSize.scrolled}px`;
-      }
     } else {
+      h.classList.remove('fw-header-scrolled');
       h.style.background =
         'linear-gradient(180deg,rgba(21,15,12,.94) 0%,rgba(21,15,12,.62) 55%,rgba(21,15,12,0) 100%)';
       h.style.backdropFilter = 'none';
       (h.style as CSSStyleDeclaration & { webkitBackdropFilter?: string }).webkitBackdropFilter =
         'none';
       h.style.boxShadow = 'none';
-      if (logo) {
-        logo.style.width = `${logoSize.default}px`;
-        logo.style.height = `${logoSize.default}px`;
-      }
     }
   };
 
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+
   return () => window.removeEventListener('scroll', onScroll);
 }
 
@@ -206,9 +256,10 @@ export function useFinnegansEffects(
 ) {
   useEffect(() => {
     const cleanups: Array<() => void> = [];
+    cleanups.push(setupMobileNav());
 
     if (mode === 'home') {
-      cleanups.push(setupScrollHeader({ scrolled: 54, default: 145 }));
+      cleanups.push(setupScrollHeader());
 
       document.querySelectorAll('#faq details').forEach((d) => {
         (d as HTMLDetailsElement).open = true;
@@ -274,19 +325,23 @@ export function useFinnegansEffects(
         });
       }
     } else if (mode === 'scroll') {
-      cleanups.push(setupScrollHeader({ scrolled: 54, default: 145 }));
+      cleanups.push(setupScrollHeader());
     } else if (mode === 'scroll-promo') {
-      cleanups.push(setupScrollHeader({ scrolled: 54, default: 120 }));
+      cleanups.push(setupScrollHeader());
+      document.getElementById('fw-header')?.classList.add('fw-logo-size-promo');
+      cleanups.push(() =>
+        document.getElementById('fw-header')?.classList.remove('fw-logo-size-promo')
+      );
     } else if (mode === 'gallery') {
-      cleanups.push(setupScrollHeader({ scrolled: 54, default: 145 }));
+      cleanups.push(setupScrollHeader());
       cleanups.push(setupGalleryLightbox());
     } else if (mode === 'faq') {
-      cleanups.push(setupScrollHeader({ scrolled: 54, default: 145 }));
+      cleanups.push(setupScrollHeader());
       document.querySelectorAll('details').forEach((d) => {
         (d as HTMLDetailsElement).open = true;
       });
     } else if (mode === 'contact') {
-      cleanups.push(setupScrollHeader({ scrolled: 54, default: 145 }));
+      cleanups.push(setupScrollHeader());
       cleanups.push(setupContactForm());
     }
 

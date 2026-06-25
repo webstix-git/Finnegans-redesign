@@ -29,15 +29,22 @@ const NAV_LINK_INACTIVE = `${NAV_LINK_BASE}color:var(--cream);`;
 const NAV_LINK_HOVER = 'style-hover="color:var(--gold2)"';
 const NAV_LINK_ACTIVE = `${NAV_LINK_BASE}color:var(--gold2);border-bottom:2px solid var(--gold);`;
 
+const FOOTER_LINK_STYLE =
+  'text-decoration:none;color:var(--cream2);transition:color .2s;';
+
+function footerQuickLink(href: string, label: string): string {
+  return `<a href="${href}" style="${FOOTER_LINK_STYLE}" style-hover="color:var(--gold2)">${label}</a>`;
+}
+
 export const BRICK_BTN_HOVER =
   'background:var(--gold2);border-color:var(--gold2);color:#1a120c;transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,0,0,.45)';
 
 function navLink(item: (typeof NAV_ITEMS)[0], activeSlug: string): string {
   const isActive = item.slug === activeSlug;
   if (isActive) {
-    return `<a href="${item.href}" style="${NAV_LINK_ACTIVE}">${item.label}</a>`;
+    return `<a href="${item.href}" class="fw-nav-link" style="${NAV_LINK_ACTIVE}">${item.label}</a>`;
   }
-  return `<a href="${item.href}" style="${NAV_LINK_INACTIVE}" ${NAV_LINK_HOVER}>${item.label}</a>`;
+  return `<a href="${item.href}" class="fw-nav-link" style="${NAV_LINK_INACTIVE}" ${NAV_LINK_HOVER}>${item.label}</a>`;
 }
 
 export function renderHeader(activeSlug: string): string {
@@ -45,17 +52,26 @@ export function renderHeader(activeSlug: string): string {
   const logoHref = activeSlug === 'home' ? '/#top' : '/';
 
   return `<!-- NAV -->
-  <header id="fw-header" style="position:fixed;top:0;left:0;right:0;z-index:50;background:linear-gradient(180deg,rgba(21,15,12,.94) 0%,rgba(21,15,12,.62) 55%,rgba(21,15,12,0) 100%);transition:background .32s ease,box-shadow .32s ease;">
-    <nav style="max-width:1200px;margin:0 auto;padding:16px 24px 30px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;">
-      <a href="${logoHref}" style="display:flex;align-items:center;text-decoration:none;flex:0 0 auto;">
-        <img id="fw-logo" src="${LOGO_SRC}" alt="Finnegan's Wake Irish Pub" style="width:145px;height:145px;border-radius:50%;border:2px solid rgba(230,219,198,.55);box-shadow:0 6px 22px rgba(0,0,0,.5);transition:width .32s ease,height .32s ease;object-fit:cover;">
-      </a>
-      <div style="flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:7px 30px;flex-wrap:wrap;font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.16em;font-size:14px;font-weight:500;text-shadow:0 1px 9px rgba(0,0,0,.6);">
-        ${links}
+  <header id="fw-header" class="fw-site-header" style="position:fixed;top:0;left:0;right:0;z-index:50;background:linear-gradient(180deg,rgba(21,15,12,.94) 0%,rgba(21,15,12,.62) 55%,rgba(21,15,12,0) 100%);transition:background .32s ease,box-shadow .32s ease;">
+    <nav class="fw-site-nav" style="max-width:1200px;margin:0 auto;padding:16px 24px 24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+      <div class="fw-site-nav-bar">
+        <a href="${logoHref}" class="fw-site-logo-link" style="display:flex;align-items:center;text-decoration:none;flex:0 0 auto;">
+          <img id="fw-logo" class="fw-site-logo" src="${LOGO_SRC}" alt="Finnegan's Wake Irish Pub" style="border-radius:50%;border:2px solid rgba(230,219,198,.55);box-shadow:0 6px 22px rgba(0,0,0,.5);transition:width .32s ease,height .32s ease;object-fit:cover;">
+        </a>
+        <button type="button" id="fw-nav-toggle" class="fw-nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="fw-nav-panel">
+          <span class="fw-nav-toggle-bar"></span>
+          <span class="fw-nav-toggle-bar"></span>
+          <span class="fw-nav-toggle-bar"></span>
+        </button>
       </div>
-      <div style="flex:0 0 auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <a href="tel:+14178691500" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none;color:var(--cream);font-family:Oswald,sans-serif;text-transform:uppercase;font-weight:500;font-size:14px;letter-spacing:.12em;padding:10px 16px;border-radius:2px;border:1px solid rgba(230,219,198,.5);transition:background .25s ease,border-color .25s ease;text-shadow:0 1px 9px rgba(0,0,0,.6);" style-hover="background:rgba(230,219,198,.12);border-color:var(--gold2);"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.62 10.79a15.91 15.91 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21c1.21.49 2.53.76 3.88.76a1 1 0 011 1V20a1 1 0 01-1 1C9.61 21 3 14.39 3 6a1 1 0 011-1h3.5a1 1 0 011 1c0 1.36.27 2.68.76 3.88a1 1 0 01-.21 1.11z"></path></svg>(417) 869-1500</a>
-        <a href="/#visit" style="text-decoration:none;color:var(--cream);background:var(--brick);font-family:Oswald,sans-serif;text-transform:uppercase;font-weight:600;font-size:14px;letter-spacing:.14em;padding:11px 22px;border-radius:2px;border:1px solid var(--brick);transition:background .25s ease,color .25s ease,border-color .25s ease,transform .25s ease,box-shadow .25s ease;" style-hover="${BRICK_BTN_HOVER}">Reserve Now</a>
+      <div id="fw-nav-panel" class="fw-site-nav-panel">
+        <div class="fw-site-nav-links" style="flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:7px 24px;flex-wrap:wrap;font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.16em;font-size:14px;font-weight:500;text-shadow:0 1px 9px rgba(0,0,0,.6);">
+          ${links}
+        </div>
+        <div class="fw-site-nav-actions" style="flex:0 0 auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <a href="tel:+14178691500" class="fw-nav-phone" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none;color:var(--cream);font-family:Oswald,sans-serif;text-transform:uppercase;font-weight:500;font-size:14px;letter-spacing:.12em;padding:9px 14px;border-radius:2px;border:1px solid rgba(230,219,198,.5);transition:background .25s ease,border-color .25s ease;text-shadow:0 1px 9px rgba(0,0,0,.6);" style-hover="background:rgba(230,219,198,.12);border-color:var(--gold2);"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.62 10.79a15.91 15.91 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.21c1.21.49 2.53.76 3.88.76a1 1 0 011 1V20a1 1 0 01-1 1C9.61 21 3 14.39 3 6a1 1 0 011-1h3.5a1 1 0 011 1c0 1.36.27 2.68.76 3.88a1 1 0 01-.21 1.11z"></path></svg>(417) 869-1500</a>
+          <a href="/#visit" class="fw-nav-cta" style="text-decoration:none;color:var(--cream);background:var(--brick);font-family:Oswald,sans-serif;text-transform:uppercase;font-weight:600;font-size:14px;letter-spacing:.14em;padding:10px 20px;border-radius:2px;border:1px solid var(--brick);transition:background .25s ease,color .25s ease,border-color .25s ease,transform .25s ease,box-shadow .25s ease;" style-hover="${BRICK_BTN_HOVER}">Reserve Now</a>
+        </div>
       </div>
     </nav>
   </header>`;
@@ -79,9 +95,9 @@ export function renderFooter(): string {
   return `<!-- FOOTER -->
   <footer style="background-color:#0c0805;padding:clamp(48px,6vw,76px) 0 0;background-image:linear-gradient(rgba(9,6,4,.92),rgba(9,6,4,.95)),url('/assets/a1708b39-e7dd-49b7-b474-65a8c1be8c3b.jpg');background-size:cover;background-position:center;">
     <div style="max-width:1280px;margin:0 auto;padding:0 40px;">
-      <div style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,0.85fr) minmax(0,1.15fr);gap:40px;align-items:start;">
+      <div class="fw-footer-grid" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px;align-items:start;">
 
-        <div>
+        <div class="fw-footer-brand">
           <div style="display:flex;align-items:center;gap:14px;">
             <img src="${LOGO_SRC}" alt="Finnegan's Wake" style="width:64px;height:64px;border-radius:50%;border:1.5px solid rgba(230,219,198,.45);flex-shrink:0;">
             <div>
@@ -110,34 +126,30 @@ export function renderFooter(): string {
           </div>
         </div>
 
-        <div>
+        <div class="fw-footer-links">
           <div style="font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.26em;font-size:11px;color:var(--gold2);margin-bottom:20px;">Quick Links</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px 28px;font-family:Montserrat,sans-serif;font-size:15px;">
+          <div class="fw-footer-links-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:13px 28px;font-family:Montserrat,sans-serif;font-size:15px;">
             <div style="display:grid;gap:13px;">
-              <a href="/menu" style="text-decoration:none;color:var(--cream2);transition:color .2s;" style-hover="color:var(--gold2)">Menu</a>
-              <a href="/promotions-and-events" style="text-decoration:none;color:var(--cream2);transition:color .2s;" style-hover="color:var(--gold2)">Events</a>
-              <a href="/gallery" style="text-decoration:none;color:var(--cream2);transition:color .2s;" style-hover="color:var(--gold2)">Gallery</a>
+              ${footerQuickLink('/menu', 'Menu')}
+              ${footerQuickLink('/promotions-and-events', 'Events')}
+              ${footerQuickLink('/gallery', 'Gallery')}
             </div>
             <div style="display:grid;gap:13px;">
-              <a href="/about-us" style="text-decoration:none;color:var(--cream2);transition:color .2s;" style-hover="color:var(--gold2)">About Us</a>
-              <a href="/reviews" style="text-decoration:none;color:var(--cream2);transition:color .2s;" style-hover="color:var(--gold2)">Reviews</a>
-              <a href="/faq" style="text-decoration:none;color:var(--cream2);transition:color .2s;" style-hover="color:var(--gold2)">FAQs</a>
-              <a href="/#visit" style="text-decoration:none;color:var(--cream2);transition:color .2s;" style-hover="color:var(--gold2)">Visit</a>
+              ${footerQuickLink('/about-us', 'About Us')}
+              ${footerQuickLink('/reviews', 'Reviews')}
+              ${footerQuickLink('/faq', 'FAQs')}
+              ${footerQuickLink('/#visit', 'Visit')}
             </div>
           </div>
         </div>
 
-        <div>
+        <div class="fw-footer-hours-col" style="justify-self:end;">
           <div style="font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.26em;font-size:11px;color:var(--gold2);margin-bottom:20px;">Hours</div>
-          <div style="display:grid;gap:10px;">
-            <div style="display:flex;justify-content:space-between;gap:16px;font-family:Montserrat,sans-serif;font-size:15px;">
-              <span style="color:var(--muted);">Mon</span>
-              <span style="color:var(--cream2);">Closed</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;gap:16px;font-family:Montserrat,sans-serif;font-size:15px;">
-              <span style="color:var(--muted);">Tue – Sun</span>
-              <span style="color:var(--cream2);">4 p.m. – Close</span>
-            </div>
+          <div class="fw-footer-hours" style="display:grid;grid-template-columns:auto auto;column-gap:16px;row-gap:2px;width:max-content;font-family:Montserrat,sans-serif;font-size:15px;">
+            <span style="color:var(--muted);">Mon</span>
+            <span style="color:var(--cream2);">Closed</span>
+            <span style="color:var(--muted);">Tue – Sun</span>
+            <span style="color:var(--cream2);">4 p.m. – Close</span>
           </div>
         </div>
 
