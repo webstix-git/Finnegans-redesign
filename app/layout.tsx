@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
+import { preload } from 'react-dom';
 import { BackToTop } from '@/components/BackToTop';
 import { FONT_PRELOADS } from '@/lib/fonts';
-import './fonts.css';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -34,19 +34,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  for (const href of FONT_PRELOADS) {
+    preload(href, { as: 'font', type: 'font/woff2', crossOrigin: 'anonymous' });
+  }
+
   return (
     <html lang="en">
       <head>
-        {FONT_PRELOADS.map((href) => (
-          <link
-            key={href}
-            rel="preload"
-            href={href}
-            as="font"
-            type="font/woff2"
-            crossOrigin="anonymous"
-          />
-        ))}
+        <link rel="preload" href="/fonts.css" as="style" />
+        <link rel="stylesheet" href="/fonts.css" />
       </head>
       <body>
         {children}

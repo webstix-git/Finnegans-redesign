@@ -1,6 +1,13 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{margin:0;background:#16100c}
+body{
+  margin:0;
+  background:#16100c;
+  font-family:Montserrat,'Segoe UI',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+}
 img{display:block;max-width:100%}
 a{color:inherit}
 ::selection{background:#ece1cb;color:#16100c}
