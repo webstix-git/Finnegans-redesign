@@ -322,3 +322,61 @@ section#top > div:last-of-type {
     padding-left: 24px;
   }
 }
+
+/* ── Back to top ── */
+.fw-back-to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 1px solid rgba(230, 219, 198, 0.45);
+  border-radius: 2px;
+  background: #a23a2c;
+  color: #f5eede;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  transition:
+    opacity 0.28s ease,
+    visibility 0.28s ease,
+    transform 0.28s ease,
+    background 0.22s ease,
+    border-color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.fw-back-to-top--visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.fw-back-to-top:hover {
+  background: #7a2a1f;
+  border-color: #ece1cb;
+  color: #ece1cb;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+  transform: translateY(-2px);
+}
+
+.fw-back-to-top:focus-visible {
+  outline: 2px solid #ece1cb;
+  outline-offset: 3px;
+}
+
+@media (max-width: 767px) {
+  .fw-back-to-top {
+    right: 16px;
+    bottom: 16px;
+    width: 44px;
+    height: 44px;
+  }
+}

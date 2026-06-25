@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { BackToTop } from '@/components/BackToTop';
 import { FONT_PRELOADS } from '@/lib/fonts';
 import './fonts.css';
 import './globals.css';
@@ -47,7 +48,10 @@ export default function RootLayout({
           />
         ))}
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <BackToTop />
+      </body>
     </html>
   );
 }
