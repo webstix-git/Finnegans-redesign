@@ -223,7 +223,13 @@ section#top > div:last-of-type {
 }
 
 .fw-footer-links {
-  justify-self: start !important;
+  justify-self: center !important;
+  text-align: left !important;
+  width: max-content;
+}
+
+.fw-footer-links-grid {
+  display: inline-grid !important;
   text-align: left !important;
 }
 
@@ -240,6 +246,7 @@ section#top > div:last-of-type {
   .fw-footer-links {
     justify-self: start !important;
     text-align: left !important;
+    width: auto;
   }
 
   .fw-footer-hours-col {
