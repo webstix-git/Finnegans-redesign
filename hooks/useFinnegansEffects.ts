@@ -220,6 +220,7 @@ function setupStPatsCarousel() {
   };
 }
 
+function setupGalleryLightbox() {
   const box = document.getElementById('fw-lightbox');
   const img = document.getElementById('fw-lightbox-img') as HTMLImageElement | null;
   const prevBtn = document.getElementById('fw-lightbox-prev');
