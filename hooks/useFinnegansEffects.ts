@@ -139,7 +139,87 @@ function setupScrollHeader() {
   return () => window.removeEventListener('scroll', onScroll);
 }
 
-function setupGalleryLightbox() {
+function setupStPatsCarousel() {
+  const carousel = document.getElementById('fw-stpats-carousel');
+  if (!carousel) return () => {};
+
+  const slides = [...carousel.querySelectorAll<HTMLElement>('.fw-carousel-slide')];
+  const dots = [...carousel.querySelectorAll<HTMLButtonElement>('.fw-carousel-dot')];
+  const prevBtn = carousel.querySelector<HTMLButtonElement>('.fw-carousel-prev');
+  const nextBtn = carousel.querySelector<HTMLButtonElement>('.fw-carousel-next');
+  if (!slides.length) return () => {};
+
+  let idx = 0;
+  let timer: number | null = null;
+
+  const goTo = (i: number) => {
+    idx = ((i % slides.length) + slides.length) % slides.length;
+    slides.forEach((slide, n) => {
+      const active = n === idx;
+      slide.classList.toggle('fw-carousel-active', active);
+      slide.setAttribute('aria-hidden', active ? 'false' : 'true');
+    });
+    dots.forEach((dot, n) => {
+      const active = n === idx;
+      dot.classList.toggle('fw-carousel-dot-active', active);
+      dot.setAttribute('aria-current', active ? 'true' : 'false');
+    });
+  };
+
+  const next = () => goTo(idx + 1);
+  const prev = () => goTo(idx - 1);
+
+  const stopAutoplay = () => {
+    if (timer !== null) {
+      window.clearInterval(timer);
+      timer = null;
+    }
+  };
+
+  const startAutoplay = () => {
+    stopAutoplay();
+    timer = window.setInterval(next, 5000);
+  };
+
+  const onPrev = () => {
+    prev();
+    startAutoplay();
+  };
+  const onNext = () => {
+    next();
+    startAutoplay();
+  };
+  const onDotClick = (e: Event) => {
+    const dotIdx = dots.indexOf(e.currentTarget as HTMLButtonElement);
+    if (dotIdx >= 0) {
+      goTo(dotIdx);
+      startAutoplay();
+    }
+  };
+
+  prevBtn?.addEventListener('click', onPrev);
+  nextBtn?.addEventListener('click', onNext);
+  dots.forEach((dot) => dot.addEventListener('click', onDotClick));
+  carousel.addEventListener('mouseenter', stopAutoplay);
+  carousel.addEventListener('mouseleave', startAutoplay);
+  carousel.addEventListener('focusin', stopAutoplay);
+  carousel.addEventListener('focusout', startAutoplay);
+
+  goTo(0);
+  startAutoplay();
+
+  return () => {
+    stopAutoplay();
+    prevBtn?.removeEventListener('click', onPrev);
+    nextBtn?.removeEventListener('click', onNext);
+    dots.forEach((dot) => dot.removeEventListener('click', onDotClick));
+    carousel.removeEventListener('mouseenter', stopAutoplay);
+    carousel.removeEventListener('mouseleave', startAutoplay);
+    carousel.removeEventListener('focusin', stopAutoplay);
+    carousel.removeEventListener('focusout', startAutoplay);
+  };
+}
+
   const box = document.getElementById('fw-lightbox');
   const img = document.getElementById('fw-lightbox-img') as HTMLImageElement | null;
   const prevBtn = document.getElementById('fw-lightbox-prev');
@@ -328,6 +408,7 @@ export function useFinnegansEffects(
       cleanups.push(setupScrollHeader());
     } else if (mode === 'scroll-promo') {
       cleanups.push(setupScrollHeader());
+      cleanups.push(setupStPatsCarousel());
       document.getElementById('fw-header')?.classList.add('fw-logo-size-promo');
       cleanups.push(() =>
         document.getElementById('fw-header')?.classList.remove('fw-logo-size-promo')

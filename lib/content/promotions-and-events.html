@@ -204,7 +204,7 @@
   <section style="background:var(--ink);padding:clamp(24px,4vw,48px) 0 clamp(40px,6vw,72px);">
     <div style="max-width:1200px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:clamp(36px,5vw,72px);align-items:stretch;">
       <div style="position:relative;order:1;min-height:clamp(480px,52vw,680px);height:100%;">
-        <img src="/assets/87f681d9-1e9c-427e-b30f-1e39f81aa216.jpg" alt="The pub packed and decked out for the holidays" style="width:100%;height:100%;min-height:clamp(480px,52vw,680px);object-fit:cover;border-radius:3px;box-shadow:0 30px 60px rgba(0,0,0,.45);display:block;">
+        <video src="/assets/finnsmas.mp4" autoplay muted loop playsinline aria-label="The pub packed and decked out for the holidays" style="width:100%;height:100%;min-height:clamp(480px,52vw,680px);object-fit:cover;border-radius:3px;box-shadow:0 30px 60px rgba(0,0,0,.45);display:block;"></video>
         <div style="position:absolute;bottom:-18px;left:-18px;background:var(--gold);color:#1a120c;font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.14em;font-size:16px;font-weight:600;padding:13px 18px;">Every winter</div>
       </div>
       <div style="order:2;display:flex;flex-direction:column;justify-content:center;">
@@ -238,8 +238,19 @@
         <p style="font-family:Montserrat,sans-serif;font-size:18px;line-height:1.78;color:var(--muted);margin-top:18px;max-width:520px;">Whether you're Irish by blood or just Irish for the day, you're welcome here.</p>
         <p style="font-family:Anton,sans-serif;text-transform:uppercase;font-size:clamp(24px,3vw,34px);color:var(--gold2);margin-top:24px;line-height:1;">Sláinte.</p>
       </div>
-      <div style="position:relative;min-height:clamp(480px,52vw,680px);height:100%;">
-        <img src="/assets/0ce3c1ba-b8cb-4f36-a47b-c1082c843df3.jpg" alt="A festive, costumed crowd celebrating at Finnegan's" style="width:100%;height:100%;min-height:clamp(480px,52vw,680px);object-fit:cover;border-radius:3px;box-shadow:0 30px 60px rgba(0,0,0,.5);display:block;">
+      <div id="fw-stpats-carousel" class="fw-carousel" style="position:relative;min-height:clamp(480px,52vw,680px);height:100%;">
+        <div class="fw-carousel-track">
+          <img class="fw-carousel-slide fw-carousel-active" src="/assets/st-pats-building-front.png" alt="Finnegan's Wake decorated with Irish flags for St. Patrick's season" aria-hidden="false">
+          <img class="fw-carousel-slide" src="/assets/st-pats-parade.png" alt="St. Patrick's Day parade crowd celebrating in front of Finnegan's Wake" aria-hidden="true">
+          <img class="fw-carousel-slide" src="/assets/st-pats-green-beer.png" alt="Green beer held up in front of the Finnegan's Wake logo" aria-hidden="true">
+        </div>
+        <button type="button" class="fw-carousel-prev" aria-label="Previous slide">‹</button>
+        <button type="button" class="fw-carousel-next" aria-label="Next slide">›</button>
+        <div class="fw-carousel-dots" role="tablist" aria-label="St. Patrick's photo slides">
+          <button type="button" class="fw-carousel-dot fw-carousel-dot-active" role="tab" aria-label="Slide 1" aria-current="true"></button>
+          <button type="button" class="fw-carousel-dot" role="tab" aria-label="Slide 2" aria-current="false"></button>
+          <button type="button" class="fw-carousel-dot" role="tab" aria-label="Slide 3" aria-current="false"></button>
+        </div>
       </div>
     </div>
   </section>
