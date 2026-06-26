@@ -392,6 +392,16 @@ section#top > div:last-of-type {
   position: relative;
 }
 
+.fw-promo-video::-webkit-media-controls-panel {
+  background: rgba(21, 15, 12, 0.88);
+}
+
+.fw-promo-video::-webkit-media-controls-play-button,
+.fw-promo-video::-webkit-media-controls-mute-button,
+.fw-promo-video::-webkit-media-controls-fullscreen-button {
+  filter: brightness(1.15);
+}
+
 .fw-carousel-track {
   position: relative;
   width: 100%;
