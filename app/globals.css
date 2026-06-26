@@ -392,14 +392,22 @@ section#top > div:last-of-type {
   position: relative;
 }
 
+.fw-promo-video::-webkit-media-controls-enclosure,
 .fw-promo-video::-webkit-media-controls-panel {
-  background: rgba(21, 15, 12, 0.88);
+  background: transparent;
+}
+
+.fw-promo-video::-webkit-media-controls-overlay-play-button {
+  display: none;
 }
 
 .fw-promo-video::-webkit-media-controls-play-button,
 .fw-promo-video::-webkit-media-controls-mute-button,
-.fw-promo-video::-webkit-media-controls-fullscreen-button {
-  filter: brightness(1.15);
+.fw-promo-video::-webkit-media-controls-fullscreen-button,
+.fw-promo-video::-webkit-media-controls-timeline,
+.fw-promo-video::-webkit-media-controls-current-time-display,
+.fw-promo-video::-webkit-media-controls-time-remaining-display {
+  filter: none;
 }
 
 .fw-carousel-track {
