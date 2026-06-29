@@ -7,11 +7,11 @@ export const metadata: Metadata = {
     absolute: "Finnegan's Wake | Downtown Springfield's Neighborhood Pub",
   },
   description:
-    "Cold drinks. Good food. Familiar faces. Downtown Springfield's neighborhood pub with Irish roots — est. 2006 at 305 South Avenue.",
+    "Cold drinks. Good food. Familiar faces. Downtown Springfield's neighborhood pub with Irish roots, est. 2006 at 305 South Avenue.",
   openGraph: {
     title: "Finnegan's Wake | Downtown Springfield's Neighborhood Pub",
     description:
-      "Cold drinks. Good food. Familiar faces. Downtown Springfield's neighborhood pub with Irish roots — est. 2006 at 305 South Avenue.",
+      "Cold drinks. Good food. Familiar faces. Downtown Springfield's neighborhood pub with Irish roots, est. 2006 at 305 South Avenue.",
   },
 };
 
