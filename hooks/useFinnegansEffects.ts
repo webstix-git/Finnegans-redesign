@@ -139,10 +139,7 @@ function setupScrollHeader() {
   return () => window.removeEventListener('scroll', onScroll);
 }
 
-function setupStPatsCarousel() {
-  const carousel = document.getElementById('fw-stpats-carousel');
-  if (!carousel) return () => {};
-
+function setupCarousel(carousel: HTMLElement) {
   const slides = [...carousel.querySelectorAll<HTMLElement>('.fw-carousel-slide')];
   const dots = [...carousel.querySelectorAll<HTMLButtonElement>('.fw-carousel-dot')];
   const prevBtn = carousel.querySelector<HTMLButtonElement>('.fw-carousel-prev');
@@ -181,20 +178,11 @@ function setupStPatsCarousel() {
     timer = window.setInterval(next, 5000);
   };
 
-  const onPrev = () => {
-    prev();
-    startAutoplay();
-  };
-  const onNext = () => {
-    next();
-    startAutoplay();
-  };
+  const onPrev = () => { prev(); startAutoplay(); };
+  const onNext = () => { next(); startAutoplay(); };
   const onDotClick = (e: Event) => {
     const dotIdx = dots.indexOf(e.currentTarget as HTMLButtonElement);
-    if (dotIdx >= 0) {
-      goTo(dotIdx);
-      startAutoplay();
-    }
+    if (dotIdx >= 0) { goTo(dotIdx); startAutoplay(); }
   };
 
   prevBtn?.addEventListener('click', onPrev);
@@ -218,6 +206,14 @@ function setupStPatsCarousel() {
     carousel.removeEventListener('focusin', stopAutoplay);
     carousel.removeEventListener('focusout', startAutoplay);
   };
+}
+
+function setupAllCarousels() {
+  const cleanups: Array<() => void> = [];
+  document.querySelectorAll<HTMLElement>('.fw-carousel').forEach((carousel) => {
+    cleanups.push(setupCarousel(carousel));
+  });
+  return () => cleanups.forEach((fn) => fn());
 }
 
 function setupGalleryLightbox() {
@@ -292,6 +288,20 @@ function setupGalleryLightbox() {
     const btn = document.getElementById(`tab-${t}`);
     if (btn) btn.addEventListener('click', () => switchTab(t));
   });
+
+  const urlTab = new URLSearchParams(window.location.search).get('tab');
+  if (urlTab && tabs.includes(urlTab)) {
+    switchTab(urlTab);
+    window.requestAnimationFrame(() => {
+      const tabBar = document.getElementById('fw-tab-bar');
+      if (tabBar) {
+        const header = document.getElementById('fw-header');
+        const headerHeight = header ? header.getBoundingClientRect().height : 0;
+        const top = tabBar.getBoundingClientRect().top + window.scrollY - headerHeight - 16;
+        window.scrollTo({ top, behavior: 'instant' });
+      }
+    });
+  }
 
   const onPrev = (e: Event) => {
     e.stopPropagation();
@@ -407,9 +417,10 @@ export function useFinnegansEffects(
       }
     } else if (mode === 'scroll') {
       cleanups.push(setupScrollHeader());
+      cleanups.push(setupAllCarousels());
     } else if (mode === 'scroll-promo') {
       cleanups.push(setupScrollHeader());
-      cleanups.push(setupStPatsCarousel());
+      cleanups.push(setupAllCarousels());
       document.getElementById('fw-header')?.classList.add('fw-logo-size-promo');
       cleanups.push(() =>
         document.getElementById('fw-header')?.classList.remove('fw-logo-size-promo')

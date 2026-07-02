@@ -44,8 +44,21 @@
   <section id="apps" style="background:var(--cream);color:#3a2c1d;padding:clamp(60px,8vw,104px) 0;">
     <div style="max-width:1200px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:clamp(36px,5vw,72px);align-items:start;">
       <div style="position:relative;">
-        <img src="/assets/061abecd-d73b-4ee9-ada9-a65718cdde27.jpg" alt="Pub appetizers at Finnegan's Wake" style="width:100%;height:clamp(340px,42vw,500px);object-fit:cover;border-radius:3px;box-shadow:0 30px 60px rgba(40,20,10,.28);">
-        <div style="position:absolute;bottom:-18px;left:-14px;background:var(--ink);color:var(--gold2);font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.18em;font-size:12px;font-weight:500;padding:13px 18px;border:1px solid rgba(230,219,198,.3);">Served w/ choice of sauce</div>
+        <div id="fw-apps-carousel" class="fw-carousel" style="position:relative;min-height:clamp(340px,42vw,500px);height:100%;">
+          <div class="fw-carousel-track" style="min-height:clamp(340px,42vw,500px);">
+            <img class="fw-carousel-slide fw-carousel-active" src="/assets/061abecd-d73b-4ee9-ada9-a65718cdde27.jpg" alt="Pub appetizers at Finnegan's Wake" aria-hidden="false">
+            <img class="fw-carousel-slide" src="/assets/food-fried-green-beans.png" alt="Fried green beans with dipping sauces at Finnegan's Wake" aria-hidden="true">
+            <img class="fw-carousel-slide" src="/assets/food-blackened-corn-ribs.png" alt="Blackened corn ribs with chipotle aioli at Finnegan's Wake" aria-hidden="true">
+          </div>
+          <button type="button" class="fw-carousel-prev" aria-label="Previous slide">‹</button>
+          <button type="button" class="fw-carousel-next" aria-label="Next slide">›</button>
+          <div class="fw-carousel-dots" role="tablist" aria-label="Apps photo slides">
+            <button type="button" class="fw-carousel-dot fw-carousel-dot-active" role="tab" aria-label="Slide 1" aria-current="true"></button>
+            <button type="button" class="fw-carousel-dot" role="tab" aria-label="Slide 2" aria-current="false"></button>
+            <button type="button" class="fw-carousel-dot" role="tab" aria-label="Slide 3" aria-current="false"></button>
+          </div>
+        </div>
+        <div style="position:absolute;bottom:-18px;left:-14px;z-index:3;background:var(--ink);color:var(--gold2);font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.18em;font-size:12px;font-weight:500;padding:13px 18px;border:1px solid rgba(230,219,198,.3);">Served w/ choice of sauce</div>
       </div>
       <div>
         <div style="font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.32em;font-size:13px;color:var(--brick);font-weight:600;margin-bottom:14px;">Start here</div>
