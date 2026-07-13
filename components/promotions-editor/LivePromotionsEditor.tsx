@@ -9,19 +9,13 @@ import {
   applyPromoScheduleDataToHtml,
   clonePromoScheduleData,
   getPromoCardOriginalFields,
-  removePromoListItem,
   type PromoCardId,
   type PromoScheduleData,
 } from '@/lib/promotionItems';
 import { authHeaders, clearStoredAuth, getStoredAuth } from '@/lib/menuAuth';
 import { EditorToolbar } from '@/components/editor/EditorToolbar';
 import { syncEditorChromeBelowBreadcrumb } from '@/components/editor/syncEditorStatusBelowBreadcrumb';
-import {
-  attachPromoEditors,
-  detachPromoEditors,
-  enterPromoCardEditModeById,
-  getActivePromoCardId,
-} from '@/components/promotions-editor/promotionsInlineEditor';
+import { attachPromoEditors, detachPromoEditors } from '@/components/promotions-editor/promotionsInlineEditor';
 import '@/components/menu-editor/editor-ui.css';
 
 interface LivePromotionsEditorProps {
@@ -47,20 +41,13 @@ export function LivePromotionsEditor({ baseHtml, initialData }: LivePromotionsEd
   const [saveStatus, setSaveStatus] = useState('');
   const [saveError, setSaveError] = useState(false);
 
-  const renderEditor = useCallback(
-    (data: PromoScheduleData, keepCardEditing = false) => {
-      const activeCard = keepCardEditing ? getActivePromoCardId() : null;
-      dataRef.current = data;
-      flushSync(() => {
-        setDisplayHtml(renderEditorHtml(baseHtml, data));
-      });
-      attachEditorsRef.current();
-      if (activeCard) {
-        enterPromoCardEditModeById(activeCard);
-      }
-    },
-    [baseHtml]
-  );
+  const renderEditor = useCallback((data: PromoScheduleData) => {
+    dataRef.current = data;
+    flushSync(() => {
+      setDisplayHtml(renderEditorHtml(baseHtml, data));
+    });
+    attachEditorsRef.current();
+  }, [baseHtml]);
 
   const attachEditors = useCallback(() => {
     const root = contentRef.current;
@@ -77,14 +64,6 @@ export function LivePromotionsEditor({ baseHtml, initialData }: LivePromotionsEd
           setSaveError(false);
         }, 3000);
       },
-      onCancelCard: () => {
-        renderEditor(clonePromoScheduleData(savedDataRef.current), false);
-      },
-      onDeleteListItem: async (cardId, segmentId, listIndex) => {
-        const current = dataRef.current;
-        if (!current) return;
-        renderEditor(removePromoListItem(current, cardId, segmentId, listIndex), true);
-      },
       onSaveCard: async (cardId: PromoCardId, fields) => {
         const current = dataRef.current;
         if (!current) return;
@@ -93,7 +72,7 @@ export function LivePromotionsEditor({ baseHtml, initialData }: LivePromotionsEd
         setSaveStatus('Saving…');
 
         const updated = applyPromoFieldsToData(current, cardId, fields);
-        renderEditor(updated, false);
+        renderEditor(updated);
 
         const res = await fetch('/api/promotions-html', {
           method: 'POST',
@@ -198,6 +177,8 @@ export function LivePromotionsEditor({ baseHtml, initialData }: LivePromotionsEd
       <EditorToolbar
         ref={toolbarRef}
         previewHref="/promotions-and-events"
+        siblingEditorHref="/menu-editor"
+        siblingEditorLabel="Menu Editor"
         onLogout={handleLogout}
       />
 

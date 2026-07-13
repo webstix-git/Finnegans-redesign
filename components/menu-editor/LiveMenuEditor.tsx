@@ -5,22 +5,18 @@ import { flushSync } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { PageContent } from '@/components/PageContent';
 import {
+  applyEditableItemUpdate,
   applyMenuDataToHtml,
-  applySectionItems,
   cloneMenuData,
   removeItemById,
   toEditableItem,
+  type EditableMenuItem,
   type MenuData,
 } from '@/lib/menuItems';
 import { authHeaders, clearStoredAuth, getStoredAuth } from '@/lib/menuAuth';
 import { EditorToolbar } from '@/components/editor/EditorToolbar';
 import { syncEditorChromeBelowBreadcrumb } from '@/components/editor/syncEditorStatusBelowBreadcrumb';
-import {
-  attachInlineEditors,
-  detachInlineEditors,
-  enterSectionEditModeById,
-  getActiveSectionId,
-} from '@/components/menu-editor/inlineEditor';
+import { attachInlineEditors, detachInlineEditors } from '@/components/menu-editor/inlineEditor';
 import './editor-ui.css';
 
 interface LiveMenuEditorProps {
@@ -40,21 +36,41 @@ export function LiveMenuEditor({ baseHtml }: LiveMenuEditorProps) {
   const [saveStatus, setSaveStatus] = useState('');
   const [saveError, setSaveError] = useState(false);
 
-  const renderEditor = useCallback(
-    (data: MenuData, keepSectionEditing = false) => {
-      const activeSection = keepSectionEditing ? getActiveSectionId() : null;
-      const newHtml = applyMenuDataToHtml(baseHtml, data, { editorMode: true });
-      dataRef.current = data;
-      flushSync(() => {
-        setDisplayHtml(newHtml);
-      });
-      attachEditorsRef.current();
-      if (activeSection) {
-        enterSectionEditModeById(activeSection);
+  const renderEditor = useCallback((data: MenuData, scrollToItemId?: string) => {
+    const scrollY = window.scrollY;
+    const newHtml = applyMenuDataToHtml(baseHtml, data, { editorMode: true });
+    dataRef.current = data;
+    flushSync(() => {
+      setDisplayHtml(newHtml);
+    });
+    attachEditorsRef.current();
+
+    requestAnimationFrame(() => {
+      if (scrollToItemId && contentRef.current) {
+        const item = contentRef.current.querySelector<HTMLElement>(
+          `[data-fw-item-id="${scrollToItemId}"]`
+        );
+        if (item) {
+          item.scrollIntoView({ block: 'nearest', behavior: 'instant' });
+          return;
+        }
       }
-    },
-    [baseHtml]
-  );
+      window.scrollTo({ top: scrollY, behavior: 'instant' });
+    });
+  }, [baseHtml]);
+
+  const persistMenu = useCallback(async (updated: MenuData) => {
+    const res = await fetch('/api/menu-html', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', ...authHeaders() },
+      body: JSON.stringify({ data: updated }),
+    });
+    const json = (await res.json()) as { ok?: boolean; error?: string };
+    if (!res.ok) throw new Error(json.error || 'Save failed');
+    savedDataRef.current = cloneMenuData(updated);
+    setSaveStatus('Saved');
+    window.setTimeout(() => setSaveStatus(''), 2000);
+  }, []);
 
   const attachEditors = useCallback(() => {
     const root = contentRef.current;
@@ -74,40 +90,30 @@ export function LiveMenuEditor({ baseHtml }: LiveMenuEditorProps) {
           setSaveError(false);
         }, 3000);
       },
-      onCancelSection: () => {
-        const saved = savedDataRef.current;
-        if (!saved) return;
-        renderEditor(cloneMenuData(saved), false);
-      },
       onDeleteItem: async (itemId) => {
-        const current = dataRef.current;
-        if (!current) return;
-        renderEditor(removeItemById(current, itemId), true);
-      },
-      onSaveSection: async (sectionId, items) => {
         const current = dataRef.current;
         if (!current) return;
 
         setSaveError(false);
         setSaveStatus('Saving…');
 
-        const updated = applySectionItems(current, sectionId, items);
-        renderEditor(updated, false);
+        const updated = removeItemById(current, itemId);
+        renderEditor(updated);
+        await persistMenu(updated);
+      },
+      onSaveItem: async (item: EditableMenuItem) => {
+        const current = dataRef.current;
+        if (!current) return;
 
-        const res = await fetch('/api/menu-html', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json', ...authHeaders() },
-          body: JSON.stringify({ data: updated }),
-        });
-        const json = (await res.json()) as { ok?: boolean; error?: string };
-        if (!res.ok) throw new Error(json.error || 'Save failed');
+        setSaveError(false);
+        setSaveStatus('Saving…');
 
-        savedDataRef.current = cloneMenuData(updated);
-        setSaveStatus('Saved');
-        window.setTimeout(() => setSaveStatus(''), 2000);
+        const updated = applyEditableItemUpdate(current, item);
+        renderEditor(updated, item.id);
+        await persistMenu(updated);
       },
     });
-  }, [renderEditor]);
+  }, [persistMenu, renderEditor]);
 
   attachEditorsRef.current = attachEditors;
 
@@ -188,7 +194,13 @@ export function LiveMenuEditor({ baseHtml }: LiveMenuEditorProps) {
 
   return (
     <>
-      <EditorToolbar ref={toolbarRef} previewHref="/menu" onLogout={handleLogout} />
+      <EditorToolbar
+        ref={toolbarRef}
+        previewHref="/menu"
+        siblingEditorHref="/promotions-and-events-editor"
+        siblingEditorLabel="Promotions Editor"
+        onLogout={handleLogout}
+      />
 
       <PageContent
         ref={contentRef}

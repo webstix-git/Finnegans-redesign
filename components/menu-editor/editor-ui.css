@@ -1,4 +1,119 @@
-/* Section-level inline editor controls */
+/* Per-item popup editor controls */
+.fw-menu-editable--card {
+  position: relative;
+}
+
+.fw-menu-editable--card .fw-item-edit-btn {
+  position: absolute;
+  top: 8px;
+  right: 0;
+  z-index: 2;
+}
+
+#apps .fw-menu-editable--card .fw-item-edit-btn,
+#drafts .fw-menu-editable--card .fw-item-edit-btn {
+  color: #a23a2c;
+  border: 1px solid rgba(162, 58, 44, 0.45);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+#apps .fw-menu-editable--card .fw-item-edit-btn:hover,
+#drafts .fw-menu-editable--card .fw-item-edit-btn:hover {
+  background: #a23a2c;
+  color: #f2e7d2;
+}
+
+#salads .fw-menu-editable--card .fw-item-edit-btn,
+#mains .fw-menu-editable--card .fw-item-edit-btn {
+  border: 1px solid rgba(236, 225, 203, 0.35);
+  background: rgba(22, 16, 12, 0.88);
+  color: #ece1cb;
+}
+
+#salads .fw-menu-editable--card .fw-item-edit-btn:hover,
+#mains .fw-menu-editable--card .fw-item-edit-btn:hover {
+  background: #ece1cb;
+  color: #1a120c;
+}
+
+.fw-item-edit-btn {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 3px;
+  font-family: Oswald, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+#salads p .fw-menu-editable--card {
+  display: inline-block;
+  padding-right: 64px;
+}
+
+#drafts li.fw-menu-editable--card {
+  padding-right: 72px;
+}
+
+#drafts p.fw-menu-editable--card {
+  display: block;
+  padding-right: 72px;
+}
+
+.fw-menu-editable--card > div[style*='display:grid'] {
+  padding-right: 72px;
+}
+
+.fw-menu-add-bar {
+  margin-top: 14px;
+  padding-top: 0;
+}
+
+.fw-menu-add-bar--draft {
+  margin-top: 10px;
+  justify-content: center;
+}
+
+.fw-menu-add-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 3px;
+  font-family: Oswald, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+  border: 1px dashed rgba(45, 106, 62, 0.55);
+  background: rgba(45, 106, 62, 0.08);
+  color: #2d6a3e;
+}
+
+.fw-menu-add-btn:hover {
+  background: #2d6a3e;
+  color: #f2e7d2;
+  border-style: solid;
+}
+
+#salads .fw-menu-add-btn,
+#mains .fw-menu-add-btn,
+#drafts .fw-menu-add-btn {
+  border-color: rgba(74, 158, 98, 0.55);
+  background: rgba(74, 158, 98, 0.1);
+  color: #8fd4a0;
+}
+
+#salads .fw-menu-add-btn:hover,
+#mains .fw-menu-add-btn:hover,
+#drafts .fw-menu-add-btn:hover {
+  background: #4a9e62;
+  color: #f2e7d2;
+}
+
 .fw-section-edit-bar {
   display: flex;
   flex-wrap: wrap;
@@ -689,6 +804,27 @@ p .fw-menu-editable {
   display: flex;
   gap: 10px;
   padding: 0 24px 24px;
+}
+
+.fw-modal-footer--split {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fw-modal-footer-actions {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.fw-modal-footer--split .fw-modal-btn--delete {
+  flex: 0 0 auto;
+  min-width: 120px;
+}
+
+.fw-modal-footer--split .fw-modal-footer-actions .fw-modal-btn {
+  flex: 0 1 160px;
 }
 
 .fw-modal-btn {

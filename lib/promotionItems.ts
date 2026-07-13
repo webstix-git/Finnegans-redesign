@@ -1,5 +1,6 @@
 export type PromoCardId =
   | 'every-day'
+  | 'alumni-hour'
   | 'tuesday'
   | 'wednesday'
   | 'thursday'
@@ -9,6 +10,7 @@ export type PromoCardId =
 
 export const PROMO_CARD_ORDER: PromoCardId[] = [
   'every-day',
+  'alumni-hour',
   'tuesday',
   'wednesday',
   'thursday',
@@ -142,11 +144,11 @@ function parseArticleSegments(body: string, cardId: string): PromoSegment[] {
   return segments;
 }
 
-function parseEveryDayCard(block: string): PromoCardData {
+function parseFeatureCard(block: string, id: PromoCardId): PromoCardData {
   const day = stripTags(
     block.match(
       /<div style="font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:\.22em;font-size:16px;color:var\(--gold2\);font-weight:600;">([\s\S]*?)<\/div>/
-    )?.[1] ?? 'Every Day'
+    )?.[1] ?? ''
   );
   const title = stripTags(block.match(/<h3[^>]*>([\s\S]*?)<\/h3>/)?.[1] ?? '');
   const priceLine = stripTags(
@@ -166,7 +168,7 @@ function parseEveryDayCard(block: string): PromoCardData {
   );
 
   return {
-    id: 'every-day',
+    id,
     day,
     title,
     badge: '',
@@ -221,7 +223,9 @@ export function parsePromoScheduleData(html: string): PromoScheduleData {
     html.match(/<!-- THE CLASS SCHEDULE -->[\s\S]*?(?=<!-- ALUMNI HOUR -->)/)?.[0] ?? '';
 
   const everyDayBlock =
-    scheduleBlock.match(/<!-- Every Day feature -->[\s\S]*?(?=<!-- weekday grid -->)/)?.[0] ?? '';
+    scheduleBlock.match(/<!-- Every Day feature -->[\s\S]*?(?=<!-- Alumni Hour feature -->)/)?.[0] ?? '';
+  const alumniHourBlock =
+    scheduleBlock.match(/<!-- Alumni Hour feature -->[\s\S]*?(?=<!-- weekday grid -->)/)?.[0] ?? '';
 
   const gridBlock =
     scheduleBlock.match(/<!-- weekday grid -->[\s\S]*?(?=<\/div>\s*<\/div>\s*<\/section>)/)?.[0] ??
@@ -229,7 +233,10 @@ export function parsePromoScheduleData(html: string): PromoScheduleData {
 
   const articles = [...gridBlock.matchAll(/<article[^>]*>([\s\S]*?)<\/article>/g)].map((m) => m[0]);
 
-  const cards: PromoCardData[] = [parseEveryDayCard(everyDayBlock)];
+  const cards: PromoCardData[] = [
+    parseFeatureCard(everyDayBlock, 'every-day'),
+    parseFeatureCard(alumniHourBlock, 'alumni-hour'),
+  ];
 
   WEEKDAY_IDS.forEach((id, index) => {
     const article = articles[index] ?? '';
@@ -319,54 +326,46 @@ function weekdayArticleStyle(card: PromoCardData): string {
   return `${base.replace('border:1px solid rgba(230,219,198,.22);', border)}position:relative;overflow:hidden;`;
 }
 
-function renderEveryDayCard(card: PromoCardData, editorMode: boolean): string {
-  const editBar = editorMode ? promoEditBarHtml(card.id) : '';
-  const cardAttrs = editorMode
-    ? `class="fw-promo-card" data-fw-card="${card.id}"`
-    : '';
-  const outerMargin = editorMode ? '' : 'margin-bottom:26px;';
-  const cardHtml = `<div ${cardAttrs} style="background:linear-gradient(100deg,rgba(162,58,44,.22),rgba(31,23,17,.6));border:1px solid rgba(230,219,198,.4);border-radius:4px;padding:32px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:22px;${outerMargin}">
+function renderFeatureCard(card: PromoCardData, editorMode: boolean): string {
+  const cardHtml = `<div class="fw-promo-card" data-fw-card="${card.id}" style="background:linear-gradient(100deg,rgba(162,58,44,.22),rgba(31,23,17,.6));border:1px solid rgba(230,219,198,.4);border-radius:4px;padding:32px 34px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:22px;${editorMode ? '' : 'margin-bottom:26px;'}">
         <div>
-          <div style="font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.22em;font-size:16px;color:var(--gold2);font-weight:600;">${wrapPromoField(escapeHtml(card.day), card.id, 'day', editorMode)}</div>
-          <h3 style="font-family:Oswald,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.03em;font-size:clamp(24px,2.8vw,32px);color:var(--cream);margin-top:8px;line-height:1.15;">${wrapPromoField(escapeHtml(card.title), card.id, 'title', editorMode)}</h3>
-          <p style="font-family:Montserrat,sans-serif;font-size:18px;color:var(--gold2);font-weight:500;margin-top:12px;letter-spacing:.01em;">${wrapPromoField(escapeHtml(card.priceLine), card.id, 'priceLine', editorMode)}</p>
-          <p style="font-family:Montserrat,sans-serif;font-size:18px;color:var(--cream2);margin-top:10px;">${wrapPromoField(textToHtml(card.description), card.id, 'description', editorMode)}</p>
+          <div style="font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.22em;font-size:16px;color:var(--gold2);font-weight:600;">${escapeHtml(card.day)}</div>
+          <h3 style="font-family:Oswald,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.03em;font-size:clamp(24px,2.8vw,32px);color:var(--cream);margin-top:8px;line-height:1.15;">${escapeHtml(card.title)}</h3>
+          <p style="font-family:Montserrat,sans-serif;font-size:18px;color:var(--gold2);font-weight:500;margin-top:12px;letter-spacing:.01em;">${escapeHtml(card.priceLine)}</p>
+          <p style="font-family:Montserrat,sans-serif;font-size:18px;color:var(--cream2);margin-top:10px;">${textToHtml(card.description)}</p>
         </div>
-        <div style="font-family:Anton,sans-serif;text-transform:uppercase;color:var(--gold2);font-size:clamp(34px,4.4vw,56px);line-height:1;white-space:nowrap;">${wrapPromoField(escapeHtml(card.displayPrice), card.id, 'displayPrice', editorMode)}</div>
+        <div style="font-family:Anton,sans-serif;text-transform:uppercase;color:var(--gold2);font-size:clamp(34px,4.4vw,56px);line-height:1;white-space:nowrap;">${escapeHtml(card.displayPrice)}</div>
       </div>`;
 
   if (!editorMode) return cardHtml;
-  return `<div class="fw-promo-card-wrap fw-promo-card-wrap--feature" style="margin-bottom:26px;">${cardHtml}${editBar}</div>`;
+  return `<div class="fw-promo-card-wrap fw-promo-card-wrap--feature" style="margin-bottom:26px;">${cardHtml}${promoEditBarHtml(card.id)}</div>`;
 }
 
 function renderWeekdayCard(card: PromoCardData, editorMode: boolean): string {
   const hasBadge = card.badge.trim().length > 0;
   const badgeHtml = hasBadge
-    ? `<div style="position:absolute;top:0;right:0;background:var(--brick);color:var(--cream);font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.14em;font-size:10px;font-weight:600;padding:5px 12px;border-radius:0 0 0 4px;">${wrapPromoField(escapeHtml(card.badge), card.id, 'badge', editorMode)}</div>`
+    ? `<div style="position:absolute;top:0;right:0;background:var(--brick);color:var(--cream);font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.14em;font-size:10px;font-weight:600;padding:5px 12px;border-radius:0 0 0 4px;">${escapeHtml(card.badge)}</div>`
     : '';
 
   const articleStyle = weekdayArticleStyle(card);
-  const segmentsHtml = card.segments.map((s) => renderSegment(s, card.id, editorMode)).join('\n          ');
-  const editBar = editorMode ? promoEditBarHtml(card.id) : '';
-  const articleAttrs = editorMode
-    ? `class="fw-promo-card" data-fw-card="${card.id}"`
-    : '';
+  const segmentsHtml = card.segments.map((s) => renderSegment(s, card.id, false)).join('\n          ');
 
-  const articleHtml = `<article ${articleAttrs} style="${articleStyle}">
+  const articleHtml = `<article class="fw-promo-card" data-fw-card="${card.id}" style="${articleStyle}">
           ${badgeHtml}
-          <div style="font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.22em;font-size:16px;color:var(--gold2);font-weight:600;">${wrapPromoField(escapeHtml(card.day), card.id, 'day', editorMode)}</div>
-          <h3 style="font-family:Oswald,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.03em;font-size:23px;color:var(--cream);margin-top:8px;">${wrapPromoField(escapeHtml(card.title), card.id, 'title', editorMode)}</h3>
+          <div style="font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.22em;font-size:16px;color:var(--gold2);font-weight:600;">${escapeHtml(card.day)}</div>
+          <h3 style="font-family:Oswald,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.03em;font-size:23px;color:var(--cream);margin-top:8px;">${escapeHtml(card.title)}</h3>
           <div style="width:42px;height:2px;background:var(--brick);margin:14px 0 18px;"></div>
           ${segmentsHtml}
         </article>`;
 
   if (!editorMode) return articleHtml;
-  return `<div class="fw-promo-card-wrap">${articleHtml}${editBar}</div>`;
+  return `<div class="fw-promo-card-wrap">${articleHtml}${promoEditBarHtml(card.id)}</div>`;
 }
 
 function promoEditBarHtml(cardId: PromoCardId): string {
   const labels: Record<PromoCardId, string> = {
     'every-day': 'Edit Every Day',
+    'alumni-hour': 'Edit Alumni Hour',
     tuesday: 'Edit Tuesday',
     wednesday: 'Edit Wednesday',
     thursday: 'Edit Thursday',
@@ -375,7 +374,7 @@ function promoEditBarHtml(cardId: PromoCardId): string {
     sunday: 'Edit Sunday',
   };
   const label = labels[cardId];
-  return `<div class="fw-section-edit-bar fw-promo-edit-bar" data-section="${cardId}"><button type="button" class="fw-menu-edit-btn" data-fw-editor-action="edit">${label}</button><button type="button" class="fw-menu-save-btn fw-item-action--hidden" data-fw-editor-action="save">Save</button><button type="button" class="fw-menu-cancel-btn fw-item-action--hidden" data-fw-editor-action="cancel">Cancel</button></div>`;
+  return `<div class="fw-section-edit-bar fw-promo-edit-bar" data-section="${cardId}"><button type="button" class="fw-menu-edit-btn" data-fw-editor-action="edit">${label}</button></div>`;
 }
 
 export function applyPromoScheduleDataToHtml(
@@ -385,6 +384,7 @@ export function applyPromoScheduleDataToHtml(
 ): string {
   const editorMode = options.editorMode ?? false;
   const everyDay = data.cards.find((c) => c.id === 'every-day');
+  const alumniHour = data.cards.find((c) => c.id === 'alumni-hour');
   const weekdays = WEEKDAY_IDS.map((id) => data.cards.find((c) => c.id === id)).filter(
     (c): c is PromoCardData => Boolean(c)
   );
@@ -395,10 +395,15 @@ export function applyPromoScheduleDataToHtml(
 
   let scheduleHtml = html.slice(scheduleStart, scheduleEnd);
 
-  if (everyDay) {
+  if (everyDay && alumniHour) {
     scheduleHtml = scheduleHtml.replace(
       /<!-- Every Day feature -->[\s\S]*?(?=<!-- weekday grid -->)/,
-      `<!-- Every Day feature -->\n      ${renderEveryDayCard(everyDay, editorMode)}\n\n      `
+      `<!-- Every Day feature -->\n      ${renderFeatureCard(everyDay, editorMode)}\n\n      <!-- Alumni Hour feature -->\n      ${renderFeatureCard(alumniHour, editorMode)}\n\n      `
+    );
+  } else if (everyDay) {
+    scheduleHtml = scheduleHtml.replace(
+      /<!-- Every Day feature -->[\s\S]*?(?=<!-- weekday grid -->)/,
+      `<!-- Every Day feature -->\n      ${renderFeatureCard(everyDay, editorMode)}\n\n      `
     );
   }
 
@@ -442,7 +447,7 @@ export function mergePromoDataPreservingCards(
 }
 
 function isCardEmpty(card: PromoCardData): boolean {
-  if (card.id === 'every-day') {
+  if (card.id === 'every-day' || card.id === 'alumni-hour') {
     return !card.title.trim() && !card.priceLine.trim();
   }
   return !card.title.trim() && card.segments.length === 0;

@@ -4,15 +4,22 @@ import { forwardRef } from 'react';
 
 interface EditorToolbarProps {
   previewHref: string;
+  siblingEditorHref?: string;
+  siblingEditorLabel?: string;
   onLogout: () => void;
 }
 
 export const EditorToolbar = forwardRef<HTMLDivElement, EditorToolbarProps>(
-  function EditorToolbar({ previewHref, onLogout }, ref) {
+  function EditorToolbar({ previewHref, siblingEditorHref, siblingEditorLabel, onLogout }, ref) {
     return (
       <div className="fw-editor-toolbar-bar" ref={ref}>
         <div className="fw-editor-toolbar">
           <span className="fw-editor-toolbar-label">Editing Mode</span>
+          {siblingEditorHref && siblingEditorLabel ? (
+            <a href={siblingEditorHref} className="fw-editor-toolbar-btn">
+              {siblingEditorLabel}
+            </a>
+          ) : null}
           <a
             href={previewHref}
             target="_blank"

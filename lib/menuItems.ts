@@ -108,7 +108,7 @@ function wrapEditor(
 ): string {
   const boardAttr = boardIndex !== undefined ? ` data-fw-board="${boardIndex}"` : '';
   const tag = inline ? 'span' : 'div';
-  return `<${tag} class="fw-menu-editable" data-fw-item-id="${id}" data-fw-category="${category}"${boardAttr}>${inner}</${tag}>`;
+  return `<${tag} class="fw-menu-editable fw-menu-editable--card" data-fw-item-id="${id}" data-fw-category="${category}"${boardAttr}>${inner}</${tag}>`;
 }
 
 const DRAFT_BEER_STYLE =
@@ -235,34 +235,19 @@ function renderPrice(price: string, color = '#2a1d12'): string {
   return `<div style="font-family:Oswald,sans-serif;font-weight:600;font-size:16px;color:${color};white-space:nowrap;">${escapeHtml(price)}</div>`;
 }
 
-function deleteButtonHtml(): string {
-  return `<button type="button" class="fw-item-delete" data-fw-editor-action="delete" aria-label="Delete item"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg></button>`;
-}
 
-function renderAppsName(item: MenuItem, editorMode = false): string {
+function renderAppsName(item: MenuItem, _editorMode = false): string {
   const name = escapeHtml(item.name);
   const badge = escapeHtml(item.badge);
-  if (editorMode) {
-    const badgeSpan = item.badge.trim()
-      ? `<span data-fw-field="badge" style="font-size:13px;font-weight:400;color:var(--brick);">${badge}</span>`
-      : `<span data-fw-field="badge" style="font-size:13px;font-weight:400;color:var(--brick);"></span>`;
-    return `<div class="fw-item-name-row"><div class="fw-item-name-main" style="font-family:Oswald,sans-serif;font-weight:600;text-transform:uppercase;font-size:18px;color:#2a1d12;"><span data-fw-field="name">${name}</span> ${badgeSpan}</div>${deleteButtonHtml()}</div>`;
-  }
   if (!item.badge.trim()) {
     return `<div style="font-family:Oswald,sans-serif;font-weight:600;text-transform:uppercase;font-size:18px;color:#2a1d12;">${name}</div>`;
   }
   return `<div style="font-family:Oswald,sans-serif;font-weight:600;text-transform:uppercase;font-size:18px;color:#2a1d12;">${name} <span style="font-size:13px;font-weight:400;color:var(--brick);">${badge}</span></div>`;
 }
 
-function renderMainsName(item: MenuItem, editorMode = false): string {
+function renderMainsName(item: MenuItem, _editorMode = false): string {
   const name = escapeHtml(item.name);
   const badge = escapeHtml(item.badge);
-  if (editorMode) {
-    const badgeSpan = item.badge.trim()
-      ? `<span style="font-family:Oswald,sans-serif;text-transform:uppercase;font-size:10px;letter-spacing:.12em;color:var(--cream);background:var(--brick);padding:3px 8px;border-radius:2px;" data-fw-field="badge">${badge}</span>`
-      : `<span style="font-family:Oswald,sans-serif;text-transform:uppercase;font-size:10px;letter-spacing:.12em;color:var(--cream);background:var(--brick);padding:3px 8px;border-radius:2px;display:none;" data-fw-field="badge"></span>`;
-    return `<div class="fw-item-name-row"><div class="fw-item-name-main" style="display:flex;align-items:center;gap:10px;min-width:0;"><span style="font-family:Oswald,sans-serif;font-weight:600;text-transform:uppercase;font-size:18px;color:var(--cream);" data-fw-field="name">${name}</span>${badgeSpan}</div>${deleteButtonHtml()}</div>`;
-  }
   if (!item.badge.trim()) {
     return `<div style="font-family:Oswald,sans-serif;font-weight:600;text-transform:uppercase;font-size:18px;color:var(--cream);">${name}</div>`;
   }
@@ -274,19 +259,13 @@ function renderAppsItems(items: MenuItem[], editorMode = false): string {
     .map((item, index) => {
       const border =
         index < items.length - 1 ? 'border-bottom:1px solid rgba(90,54,30,.14);' : '';
-      const desc = editorMode
-        ? `<div data-fw-field="description" style="font-family:Montserrat,sans-serif;font-size:13.5px;color:#7a6346;margin-top:4px;">${escapeHtml(item.description)}</div>`
-        : item.description.trim()
-          ? `<div style="font-family:Montserrat,sans-serif;font-size:13.5px;color:#7a6346;margin-top:4px;">${escapeHtml(item.description)}</div>`
-          : '';
-      const price = editorMode
-        ? item.price.trim()
-          ? `<div data-fw-field="price" style="font-family:Oswald,sans-serif;font-weight:600;font-size:16px;color:#2a1d12;white-space:nowrap;">${escapeHtml(item.price)}</div>`
-          : ''
-        : renderPrice(item.price);
+      const desc = item.description.trim()
+        ? `<div style="font-family:Montserrat,sans-serif;font-size:13.5px;color:#7a6346;margin-top:4px;">${escapeHtml(item.description)}</div>`
+        : '';
+      const price = renderPrice(item.price);
       const inner = `<div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:baseline;padding:14px 0;${border}">
             <div>
-              ${renderAppsName(item, editorMode)}
+              ${renderAppsName(item)}
               ${desc}
             </div>
             ${price}
@@ -301,19 +280,13 @@ function renderMainsItems(items: MenuItem[], editorMode = false): string {
     .map((item, index) => {
       const border =
         index < items.length - 1 ? 'border-bottom:1px solid rgba(230,219,198,.12);' : '';
-      const desc = editorMode
-        ? `<div data-fw-field="description" style="font-family:Montserrat,sans-serif;font-size:13.5px;color:var(--muted);margin-top:4px;">${escapeHtml(item.description)}</div>`
-        : item.description.trim()
-          ? `<div style="font-family:Montserrat,sans-serif;font-size:13.5px;color:var(--muted);margin-top:4px;">${escapeHtml(item.description)}</div>`
-          : '';
-      const price = editorMode
-        ? item.price.trim()
-          ? `<div data-fw-field="price" style="font-family:Oswald,sans-serif;font-weight:600;font-size:16px;color:var(--gold2);white-space:nowrap;">${escapeHtml(item.price)}</div>`
-          : ''
-        : renderPrice(item.price, 'var(--gold2)');
+      const desc = item.description.trim()
+        ? `<div style="font-family:Montserrat,sans-serif;font-size:13.5px;color:var(--muted);margin-top:4px;">${escapeHtml(item.description)}</div>`
+        : '';
+      const price = renderPrice(item.price, 'var(--gold2)');
       const inner = `<div style="display:grid;grid-template-columns:1fr auto;gap:16px;align-items:baseline;padding:14px 0;${border}">
             <div>
-              ${renderMainsName(item, editorMode)}
+              ${renderMainsName(item)}
               ${desc}
             </div>
             ${price}
@@ -327,7 +300,7 @@ function renderSaladDescription(description: string, editorMode = false): string
   const inner = escapeHtml(description);
   if (!editorMode) return inner;
   return wrapEditor(
-    `<span data-fw-salad-desc="1" data-fw-field="description">${inner}</span>`,
+    `<span data-fw-salad-desc="1">${inner}</span>`,
     SALAD_DESC_ID,
     'salad'
   );
@@ -336,14 +309,10 @@ function renderSaladDescription(description: string, editorMode = false): string
 function renderSaladOptions(options: SaladOption[], editorMode = false): string {
   return options
     .map((option) => {
-      const inner = editorMode
-        ? `<div class="fw-item-name-row" style="align-items:baseline;"><div class="fw-item-name-main" style="display:flex;align-items:baseline;gap:12px;font-family:Montserrat,sans-serif;font-size:17px;color:var(--cream2);min-width:0;"><span style="color:var(--brick);font-size:11px;">◆</span><span data-fw-field="name">${escapeHtml(option.name)}</span> <span data-fw-field="price" style="white-space:nowrap;">${escapeHtml(option.price)}</span></div>${deleteButtonHtml()}</div>`
-        : (() => {
-            const label = option.price.trim()
-              ? `${escapeHtml(option.name)} ${escapeHtml(option.price)}`
-              : escapeHtml(option.name);
-            return `<div style="display:flex;align-items:baseline;gap:12px;font-family:Montserrat,sans-serif;font-size:17px;color:var(--cream2);"><span style="color:var(--brick);font-size:11px;">◆</span>${label}</div>`;
-          })();
+      const label = option.price.trim()
+        ? `${escapeHtml(option.name)} ${escapeHtml(option.price)}`
+        : escapeHtml(option.name);
+      const inner = `<div style="display:flex;align-items:baseline;gap:12px;font-family:Montserrat,sans-serif;font-size:17px;color:var(--cream2);"><span style="color:var(--brick);font-size:11px;">◆</span>${label}</div>`;
       return editorMode ? wrapEditor(inner, option.id, 'salad') : inner;
     })
     .join('\n          ');
@@ -354,27 +323,26 @@ function renderDraftBeerList(beers: DraftBeer[], editorMode = false, boardIndex:
     .map((beer, index) => {
       const border =
         index < beers.length - 1 ? 'border-bottom:1px solid rgba(230,219,198,.1);' : '';
-      if (editorMode) {
-        const price = beer.price.trim()
-          ? `<span data-fw-field="price" style="opacity:.65;font-size:14px;">${escapeHtml(beer.price)}</span>`
-          : '';
-        return `<li class="fw-menu-editable fw-item-name-row" data-fw-item-id="${beer.id}" data-fw-category="drafts" data-fw-board="${boardIndex}" style="${DRAFT_BEER_STYLE}${border}list-style:none;"><span class="fw-item-name-main" data-fw-field="name">${escapeHtml(beer.name)}</span>${price}${deleteButtonHtml()}</li>`;
-      }
       const label = beer.price.trim()
         ? `${escapeHtml(beer.name)} <span style="opacity:.65;font-size:14px;">${escapeHtml(beer.price)}</span>`
         : escapeHtml(beer.name);
+      if (editorMode) {
+        return `<li class="fw-menu-editable fw-menu-editable--card" data-fw-item-id="${beer.id}" data-fw-category="drafts" data-fw-board="${boardIndex}" style="${DRAFT_BEER_STYLE}${border}list-style:none;">${label}</li>`;
+      }
       return `<li style="${DRAFT_BEER_STYLE}${border}">${label}</li>`;
     })
     .join('\n            ');
 }
 
 function renderDraftBoard(board: DraftBoard, editorMode = false, boardIndex: 0 | 1 = 0): string {
+  const footer1Inner = escapeHtml(board.footerLine1);
+  const footer2Inner = escapeHtml(board.footerLine2);
   const footer1 = editorMode
-    ? `<p class="fw-menu-editable" data-fw-item-id="${draftFooterId(boardIndex, 1)}" data-fw-category="drafts" data-fw-board="${boardIndex}" data-fw-field="description" style="${DRAFT_FOOTER1_STYLE}">${escapeHtml(board.footerLine1)}</p>`
-    : `<p style="${DRAFT_FOOTER1_STYLE}">${escapeHtml(board.footerLine1)}</p>`;
+    ? `<p class="fw-menu-editable fw-menu-editable--card" data-fw-item-id="${draftFooterId(boardIndex, 1)}" data-fw-category="drafts" data-fw-board="${boardIndex}" style="${DRAFT_FOOTER1_STYLE}">${footer1Inner}</p>`
+    : `<p style="${DRAFT_FOOTER1_STYLE}">${footer1Inner}</p>`;
   const footer2 = editorMode
-    ? `<p class="fw-menu-editable" data-fw-item-id="${draftFooterId(boardIndex, 2)}" data-fw-category="drafts" data-fw-board="${boardIndex}" data-fw-field="description" style="${DRAFT_FOOTER2_STYLE}">${escapeHtml(board.footerLine2)}</p>`
-    : `<p style="${DRAFT_FOOTER2_STYLE}">${escapeHtml(board.footerLine2)}</p>`;
+    ? `<p class="fw-menu-editable fw-menu-editable--card" data-fw-item-id="${draftFooterId(boardIndex, 2)}" data-fw-category="drafts" data-fw-board="${boardIndex}" style="${DRAFT_FOOTER2_STYLE}">${footer2Inner}</p>`
+    : `<p style="${DRAFT_FOOTER2_STYLE}">${footer2Inner}</p>`;
 
   return `<ul style="list-style:none;display:grid;gap:0;">
             ${renderDraftBeerList(board.beers, editorMode, boardIndex)}
@@ -394,10 +362,9 @@ export function applyMenuDataToHtml(
   let next = html;
 
   {
-    const appsBar = editorMode ? sectionEditBarHtml('apps') : '';
     next = next.replace(
       /(<!-- APPS -->[\s\S]*?<div style="margin-top:32px;display:grid;gap:0;">)\s*[\s\S]*?(\s*<\/div>\s*<\/div>\s*<\/div>\s*<\/section>\s*\n\s*<!-- SALAD -->)/,
-      `$1\n          ${renderAppsItems(data.apps, editorMode)}\n          ${appsBar}\n        $2`
+      `$1\n          ${renderAppsItems(data.apps, editorMode)}\n        $2`
     );
   }
 
@@ -407,18 +374,16 @@ export function applyMenuDataToHtml(
   );
 
   {
-    const saladsBar = editorMode ? sectionEditBarHtml('salads') : '';
     next = next.replace(
       /(<!-- SALAD -->[\s\S]*?<div style="margin-top:26px;display:grid;gap:12px;max-width:360px;">)\s*[\s\S]*?(\s*<\/div>\s*<\/div>\s*<div style="position:relative;">)/,
-      `$1\n          ${renderSaladOptions(data.salad.options, editorMode)}\n          ${saladsBar}\n        $2`
+      `$1\n          ${renderSaladOptions(data.salad.options, editorMode)}\n        $2`
     );
   }
 
   {
-    const mainsBar = editorMode ? sectionEditBarHtml('mains') : '';
     next = next.replace(
       /(<!-- MAINS -->[\s\S]*?<div style="margin-top:32px;display:grid;gap:0;">)\s*[\s\S]*?(\s*<\/div>\s*<\/div>\s*<div style="position:relative;">)/,
-      `$1\n          ${renderMainsItems(data.mains, editorMode)}\n          ${mainsBar}\n        $2`
+      `$1\n          ${renderMainsItems(data.mains, editorMode)}\n        $2`
     );
   }
 
@@ -432,25 +397,7 @@ export function applyMenuDataToHtml(
     `$1${renderDraftBoard(data.draftBoards[1], editorMode, 1)}$2`
   );
 
-  if (editorMode) {
-    next = next.replace(
-      /(<section id="drafts"[\s\S]*?<div style="display:grid;grid-template-columns:repeat\(auto-fit,minmax\(300px,1fr\)\);gap:26px;">[\s\S]*?<\/div>)(\s*<\/div>\s*<\/section>)/,
-      `$1\n      ${sectionEditBarHtml('drafts')}$2`
-    );
-  }
-
   return next;
-}
-
-function sectionEditBarHtml(section: 'apps' | 'salads' | 'mains' | 'drafts'): string {
-  const labels: Record<typeof section, string> = {
-    apps: 'Edit Apps',
-    salads: 'Edit Salad',
-    mains: 'Edit Mains',
-    drafts: 'Edit Draft List',
-  };
-  const label = labels[section];
-  return `<div class="fw-section-edit-bar" data-section="${section}"><button type="button" class="fw-menu-edit-btn" data-fw-editor-action="edit">${label}</button><button type="button" class="fw-menu-save-btn fw-item-action--hidden" data-fw-editor-action="save">Save</button><button type="button" class="fw-menu-cancel-btn fw-item-action--hidden" data-fw-editor-action="cancel">Cancel</button></div>`;
 }
 
 export function cloneMenuData(data: MenuData): MenuData {
@@ -479,6 +426,18 @@ export function mergeMenuDataPreservingSections(incoming: MenuData, stored: Menu
 
 export function createEmptyMenuItem(category: MenuCategory = 'apps'): MenuItem {
   return { id: newId(), name: '', description: '', badge: '', price: '' };
+}
+
+export function createEmptyEditableItem(
+  category: MenuCategory,
+  boardIndex?: 0 | 1
+): EditableMenuItem {
+  const item = createEmptyMenuItem(category);
+  return {
+    ...item,
+    category,
+    boardIndex: category === 'drafts' ? boardIndex ?? 0 : undefined,
+  };
 }
 
 export function toEditableItem(data: MenuData, id: string): EditableMenuItem | null {
@@ -600,7 +559,7 @@ export function applyEditableItemUpdate(data: MenuData, item: EditableMenuItem):
     return next;
   }
 
-  let next = removeItemById(data, item.id);
+  const next = cloneMenuData(data);
 
   if (item.category === 'apps' || item.category === 'mains') {
     const menuItem: MenuItem = {
@@ -610,21 +569,26 @@ export function applyEditableItemUpdate(data: MenuData, item: EditableMenuItem):
       badge: item.badge,
       price: item.price,
     };
-    if (item.category === 'apps') next.apps.push(menuItem);
-    else next.mains.push(menuItem);
+    const list = item.category === 'apps' ? next.apps : next.mains;
+    const index = list.findIndex((i) => i.id === item.id);
+    if (index >= 0) list[index] = menuItem;
+    else list.push(menuItem);
     return next;
   }
 
   if (item.category === 'salad') {
-    next.salad.options.push({ id: item.id, name: item.name, price: item.price });
+    const option = { id: item.id, name: item.name, price: item.price };
+    const index = next.salad.options.findIndex((i) => i.id === item.id);
+    if (index >= 0) next.salad.options[index] = option;
+    else next.salad.options.push(option);
     return next;
   }
 
   const boardIndex = item.boardIndex ?? 0;
-  next.draftBoards[boardIndex].beers.push({
-    id: item.id,
-    name: item.name,
-    price: item.price,
-  });
+  const beers = next.draftBoards[boardIndex].beers;
+  const beer = { id: item.id, name: item.name, price: item.price };
+  const index = beers.findIndex((b) => b.id === item.id);
+  if (index >= 0) beers[index] = beer;
+  else beers.push(beer);
   return next;
 }

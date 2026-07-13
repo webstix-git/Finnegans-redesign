@@ -1,377 +1,191 @@
-import type { EditableMenuItem } from '@/lib/menuItems';
+import {
+  createEmptyEditableItem,
+  type EditableMenuItem,
+  type MenuCategory,
+} from '@/lib/menuItems';
 import { confirmDeleteItem } from '@/components/editor/deleteConfirm';
+import { showMenuItemModal } from '@/components/menu-editor/menuItemModal';
 
-type SectionId = 'apps' | 'salads' | 'mains' | 'drafts';
-
-const SECTIONS: {
-  id: SectionId;
-  label: string;
-  anchorSelector: string;
-}[] = [
-  { id: 'apps', label: 'Edit Apps', anchorSelector: 'div[style*="margin-top:32px"][style*="display:grid"]' },
-  { id: 'salads', label: 'Edit Salad', anchorSelector: 'div[style*="margin-top:26px"][style*="display:grid"]' },
-  { id: 'mains', label: 'Edit Mains', anchorSelector: 'div[style*="margin-top:32px"][style*="display:grid"]' },
-  { id: 'drafts', label: 'Edit Draft List', anchorSelector: 'div[style*="grid-template-columns:repeat(auto-fit"]' },
-];
-
-function fieldText(el: HTMLElement | null): string {
-  return el?.textContent?.trim() ?? '';
-}
-
-function showBadge(el: HTMLElement | null) {
-  if (!el) return;
-  el.style.removeProperty('display');
-}
-
-function getEditableFields(wrapper: HTMLElement): HTMLElement[] {
-  const fields = [...wrapper.querySelectorAll<HTMLElement>('[data-fw-field]')];
-  if (wrapper.dataset.fwField) fields.unshift(wrapper);
-  return fields;
-}
-
-function readField(wrapper: HTMLElement, field: string): string {
-  const el =
-    wrapper.dataset.fwField === field
-      ? wrapper
-      : wrapper.querySelector<HTMLElement>(`[data-fw-field="${field}"]`);
-  return fieldText(el);
-}
-
-export function readItemFromDom(wrapper: HTMLElement): EditableMenuItem {
-  const id = wrapper.dataset.fwItemId ?? '';
-  const category = (wrapper.dataset.fwCategory ?? 'apps') as EditableMenuItem['category'];
-  const boardIndex = wrapper.dataset.fwBoard
-    ? (Number(wrapper.dataset.fwBoard) as 0 | 1)
-    : undefined;
-  const isSaladDescription = wrapper.querySelector('[data-fw-salad-desc="1"]') !== null;
-  const isDraftFooter = id.startsWith('draft-footer-');
-
-  return {
-    id,
-    name: readField(wrapper, 'name'),
-    description: readField(wrapper, 'description'),
-    price: readField(wrapper, 'price'),
-    badge: readField(wrapper, 'badge'),
-    category,
-    boardIndex,
-    isSaladDescription,
-    isDraftFooter,
-  };
-}
-
-function setFieldEditable(wrapper: HTMLElement, editing: boolean) {
-  getEditableFields(wrapper).forEach((field) => {
-    if (editing) {
-      field.setAttribute('contenteditable', 'true');
-      field.setAttribute('spellcheck', 'false');
-      field.classList.add('fw-inline-field');
-    } else {
-      field.removeAttribute('contenteditable');
-      field.removeAttribute('spellcheck');
-      field.classList.remove('fw-inline-field');
-    }
-  });
-
-  const badge = wrapper.querySelector<HTMLElement>('[data-fw-field="badge"]');
-  if (badge && editing) {
-    showBadge(badge);
-  }
-}
-
-export interface InlineEditorCallbacks {
-  onSaveSection: (sectionId: SectionId, items: EditableMenuItem[]) => Promise<void>;
-  onDeleteItem: (itemId: string, sectionId: SectionId) => Promise<void>;
-  onCancelSection?: (sectionId: SectionId) => void;
+export interface PopupMenuEditorCallbacks {
+  onSaveItem: (item: EditableMenuItem) => Promise<void>;
+  onDeleteItem: (itemId: string) => Promise<void>;
   onError?: (message: string) => void;
   getOriginal: (id: string) => EditableMenuItem | null;
 }
 
-let activeSectionId: SectionId | null = null;
-let activeSectionEl: HTMLElement | null = null;
-let activeSectionBar: HTMLElement | null = null;
+const ADD_TARGETS: {
+  category: MenuCategory;
+  label: string;
+  anchor: string;
+}[] = [
+  {
+    category: 'apps',
+    label: '+ Add Appetizer',
+    anchor: '#apps div[style*="margin-top:32px"][style*="display:grid"]',
+  },
+  {
+    category: 'salad',
+    label: '+ Add Salad Option',
+    anchor: '#salads div[style*="margin-top:26px"][style*="display:grid"]',
+  },
+  {
+    category: 'mains',
+    label: '+ Add Main',
+    anchor: '#mains div[style*="margin-top:32px"][style*="display:grid"]',
+  },
+];
 
 let editorRoot: HTMLElement | null = null;
-let editorCallbacks: InlineEditorCallbacks | null = null;
+let editorCallbacks: PopupMenuEditorCallbacks | null = null;
 
-function getSectionItems(section: HTMLElement): HTMLElement[] {
-  return [...section.querySelectorAll<HTMLElement>('.fw-menu-editable')];
+function ensureItemEditButtons(root: HTMLElement) {
+  root.querySelectorAll<HTMLElement>('.fw-menu-editable').forEach((wrapper) => {
+    if (wrapper.querySelector('.fw-item-edit-btn')) return;
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'fw-item-edit-btn';
+    btn.dataset.fwEditorAction = 'edit-item';
+    btn.textContent = 'Edit';
+    btn.setAttribute('aria-label', 'Edit menu item');
+    wrapper.appendChild(btn);
+  });
 }
 
-function setSectionActionsVisible(bar: HTMLElement, visible: boolean) {
-  bar.querySelector('.fw-menu-save-btn')?.classList.toggle('fw-item-action--hidden', !visible);
-  bar.querySelector('.fw-menu-cancel-btn')?.classList.toggle('fw-item-action--hidden', !visible);
-}
+function ensureAddButtons(root: HTMLElement) {
+  root.querySelectorAll('.fw-menu-add-bar').forEach((el) => el.remove());
 
-function restoreOriginal(wrapper: HTMLElement, original: EditableMenuItem) {
-  const setField = (field: string, value: string) => {
-    const el =
-      wrapper.dataset.fwField === field
-        ? wrapper
-        : wrapper.querySelector<HTMLElement>(`[data-fw-field="${field}"]`);
-    if (el) el.textContent = value;
-  };
+  for (const target of ADD_TARGETS) {
+    const anchor = root.querySelector<HTMLElement>(target.anchor);
+    if (!anchor) continue;
 
-  if (original.isSaladDescription || original.isDraftFooter) {
-    setField('description', original.description);
-    return;
+    const bar = document.createElement('div');
+    bar.className = 'fw-section-edit-bar fw-menu-add-bar';
+    bar.dataset.fwAddCategory = target.category;
+    bar.innerHTML = `<button type="button" class="fw-menu-add-btn" data-fw-editor-action="add-item">${target.label}</button>`;
+    anchor.insertAdjacentElement('afterend', bar);
   }
 
-  setField('name', original.name);
-  setField('description', original.description);
-  setField('price', original.price);
-  setField('badge', original.badge);
-}
+  root.querySelectorAll<HTMLElement>('#drafts ul').forEach((ul, index) => {
+    if (ul.nextElementSibling?.classList.contains('fw-menu-add-bar')) return;
 
-function exitSectionEditMode(section: HTMLElement, bar: HTMLElement) {
-  section.classList.remove('fw-section-editing');
-  getSectionItems(section).forEach((wrapper) => {
-    wrapper.classList.remove('fw-item-editing');
-    setFieldEditable(wrapper, false);
-  });
-  setSectionActionsVisible(bar, false);
-
-  if (activeSectionEl === section) {
-    activeSectionId = null;
-    activeSectionEl = null;
-    activeSectionBar = null;
-  }
-}
-
-function restoreSection(section: HTMLElement, callbacks: InlineEditorCallbacks) {
-  getSectionItems(section).forEach((wrapper) => {
-    const id = wrapper.dataset.fwItemId ?? '';
-    const original = callbacks.getOriginal(id);
-    if (original) restoreOriginal(wrapper, original);
+    const bar = document.createElement('div');
+    bar.className = 'fw-section-edit-bar fw-menu-add-bar fw-menu-add-bar--draft';
+    bar.dataset.fwAddCategory = 'drafts';
+    bar.dataset.fwBoard = String(index);
+    bar.innerHTML = `<button type="button" class="fw-menu-add-btn" data-fw-editor-action="add-item">+ Add Beer</button>`;
+    ul.insertAdjacentElement('afterend', bar);
   });
 }
 
-function enterSectionEditMode(
-  sectionId: SectionId,
-  section: HTMLElement,
-  bar: HTMLElement,
-  _callbacks: InlineEditorCallbacks
-) {
-  activeSectionId = sectionId;
-  activeSectionEl = section;
-  activeSectionBar = bar;
-
-  section.classList.add('fw-section-editing');
-  getSectionItems(section).forEach((wrapper) => {
-    wrapper.classList.add('fw-item-editing');
-    setFieldEditable(wrapper, true);
-  });
-  setSectionActionsVisible(bar, true);
-
-  const firstField =
-    getSectionItems(section)
-      .flatMap((wrapper) => getEditableFields(wrapper))
-      .find(Boolean) ?? section.querySelector<HTMLElement>('[data-fw-field]');
-  firstField?.focus();
-}
-
-export function enterSectionEditModeById(sectionId: SectionId) {
-  const callbacks = editorCallbacks;
-  if (!callbacks || !editorRoot) return;
-
-  const section = editorRoot.querySelector<HTMLElement>(`#${sectionId}`);
-  const bar = section?.querySelector<HTMLElement>(
-    `.fw-section-edit-bar[data-section="${sectionId}"]`
-  );
-  if (!section || !bar) return;
-
-  enterSectionEditMode(sectionId, section, bar, callbacks);
-}
-
-export function reenterActiveSectionEditMode() {
-  if (!activeSectionId) return;
-  enterSectionEditModeById(activeSectionId);
-}
-
-function resolveSectionContext(actionBtn: HTMLElement): {
-  sectionId: SectionId;
-  section: HTMLElement;
-  bar: HTMLElement;
-} | null {
-  const bar = actionBtn.closest<HTMLElement>('.fw-section-edit-bar');
-  if (!bar?.dataset.section || !editorRoot) return null;
-
-  const sectionId = bar.dataset.section as SectionId;
-  const section = editorRoot.querySelector<HTMLElement>(`#${sectionId}`);
-  if (!section) return null;
-
-  const liveBar =
-    section.querySelector<HTMLElement>(`.fw-section-edit-bar[data-section="${sectionId}"]`) ?? bar;
-
-  return { sectionId, section, bar: liveBar };
-}
-
-async function handleSaveClick(
-  sectionId: SectionId,
-  section: HTMLElement,
-  bar: HTMLElement,
-  saveBtn: HTMLButtonElement
-) {
+async function handleEditItem(wrapper: HTMLElement) {
   const callbacks = editorCallbacks;
   if (!callbacks) return;
 
-  const items = getSectionItems(section).map(readItemFromDom);
-  saveBtn.disabled = true;
-  const prevLabel = saveBtn.textContent;
-  saveBtn.textContent = 'Saving…';
+  const id = wrapper.dataset.fwItemId ?? '';
+  const original = callbacks.getOriginal(id);
+  if (!original) return;
 
-  try {
-    await callbacks.onSaveSection(sectionId, items);
-    resetInlineEditorState();
-  } catch (err) {
-    callbacks.onError?.(err instanceof Error ? err.message : 'Save failed');
-    const live = editorRoot
-      ?.querySelector<HTMLElement>(`#${sectionId}`)
-      ?.querySelector<HTMLButtonElement>('[data-fw-editor-action="save"]');
-    if (live) {
-      live.disabled = false;
-      live.textContent = 'Save';
+  const result = await showMenuItemModal({ ...original });
+
+  if (result.action === 'save' && result.item) {
+    try {
+      await callbacks.onSaveItem(result.item);
+    } catch (err) {
+      callbacks.onError?.(err instanceof Error ? err.message : 'Save failed');
     }
-  } finally {
-    if (saveBtn.isConnected) {
-      saveBtn.disabled = false;
-      saveBtn.textContent = prevLabel === 'Saving…' ? 'Save' : prevLabel;
+    return;
+  }
+
+  if (result.action === 'delete') {
+    const confirmed = await confirmDeleteItem();
+    if (!confirmed) return;
+    try {
+      await callbacks.onDeleteItem(id);
+    } catch (err) {
+      callbacks.onError?.(err instanceof Error ? err.message : 'Delete failed');
     }
   }
 }
 
-async function handleDeleteClick(deleteBtn: HTMLButtonElement) {
+async function handleAddItem(bar: HTMLElement) {
   const callbacks = editorCallbacks;
-  if (!callbacks || !editorRoot || !activeSectionId) return;
+  if (!callbacks) return;
 
-  const wrapper = deleteBtn.closest<HTMLElement>('.fw-menu-editable');
-  const itemId = wrapper?.dataset.fwItemId;
-  if (!itemId || wrapper?.querySelector('[data-fw-salad-desc="1"]') || itemId.startsWith('draft-footer-')) {
-    return;
-  }
+  const category = bar.dataset.fwAddCategory as MenuCategory | undefined;
+  if (!category) return;
 
-  const confirmed = await confirmDeleteItem();
-  if (!confirmed) return;
+  const boardIndex =
+    category === 'drafts' ? (Number(bar.dataset.fwBoard) as 0 | 1) : undefined;
+  const empty = createEmptyEditableItem(category, boardIndex);
+  const result = await showMenuItemModal(empty, { isNew: true });
 
-  try {
-    await callbacks.onDeleteItem(itemId, activeSectionId);
-  } catch (err) {
-    callbacks.onError?.(err instanceof Error ? err.message : 'Delete failed');
+  if (result.action === 'save' && result.item) {
+    if (!result.item.name.trim()) {
+      callbacks.onError?.('Item name is required');
+      return;
+    }
+    try {
+      await callbacks.onSaveItem(result.item);
+    } catch (err) {
+      callbacks.onError?.(err instanceof Error ? err.message : 'Save failed');
+    }
   }
 }
 
 function handleEditorClick(event: Event) {
-  const callbacks = editorCallbacks;
-  if (!callbacks || !editorRoot) return;
+  const target = event.target as HTMLElement;
 
-  const actionBtn = (event.target as HTMLElement).closest<HTMLButtonElement>(
-    '[data-fw-editor-action]'
-  );
-  if (!actionBtn || actionBtn.disabled) return;
-
-  const action = actionBtn.dataset.fwEditorAction;
-
-  if (action === 'delete') {
-    if (!actionBtn.closest('.fw-section-editing')) return;
-    event.preventDefault();
-    event.stopPropagation();
-    void handleDeleteClick(actionBtn);
+  const addBtn = target.closest<HTMLButtonElement>('[data-fw-editor-action="add-item"]');
+  if (addBtn && !addBtn.disabled) {
+    const bar = addBtn.closest<HTMLElement>('.fw-menu-add-bar');
+    if (bar) {
+      event.preventDefault();
+      event.stopPropagation();
+      void handleAddItem(bar);
+    }
     return;
   }
 
-  const ctx = resolveSectionContext(actionBtn);
-  if (!ctx) return;
+  const actionBtn = target.closest<HTMLButtonElement>('[data-fw-editor-action="edit-item"]');
+  if (!actionBtn || actionBtn.disabled) return;
 
-  const { sectionId, section, bar } = ctx;
+  const wrapper = actionBtn.closest<HTMLElement>('.fw-menu-editable');
+  if (!wrapper) return;
 
   event.preventDefault();
   event.stopPropagation();
-
-  if (action === 'edit') {
-    if (activeSectionId && activeSectionId !== sectionId) {
-      if (callbacks.onCancelSection) {
-        const prevId = activeSectionId;
-        const nextId = sectionId;
-        resetInlineEditorState();
-        callbacks.onCancelSection(prevId);
-        window.queueMicrotask(() => enterSectionEditModeById(nextId));
-        return;
-      }
-      restoreSection(activeSectionEl!, callbacks);
-      exitSectionEditMode(activeSectionEl!, activeSectionBar!);
-    }
-    enterSectionEditMode(sectionId, section, bar, callbacks);
-    return;
-  }
-
-  if (action === 'cancel') {
-    if (callbacks.onCancelSection) {
-      const id = sectionId;
-      resetInlineEditorState();
-      callbacks.onCancelSection(id);
-      return;
-    }
-    restoreSection(section, callbacks);
-    exitSectionEditMode(section, bar);
-    return;
-  }
-
-  if (action === 'save') {
-    void handleSaveClick(sectionId, section, bar, actionBtn);
-  }
-}
-
-function ensureSectionBars(root: HTMLElement) {
-  root.querySelectorAll('.fw-item-controls').forEach((el) => el.remove());
-
-  for (const { id, label, anchorSelector } of SECTIONS) {
-    const section = root.querySelector<HTMLElement>(`#${id}`);
-    if (!section) continue;
-
-    if (section.querySelector(`.fw-section-edit-bar[data-section="${id}"]`)) continue;
-
-    const anchor = section.querySelector(anchorSelector);
-    if (!anchor) continue;
-
-    const bar = document.createElement('div');
-    bar.className = 'fw-section-edit-bar';
-    bar.dataset.section = id;
-    bar.innerHTML = `<button type="button" class="fw-menu-edit-btn" data-fw-editor-action="edit">${label}</button><button type="button" class="fw-menu-save-btn fw-item-action--hidden" data-fw-editor-action="save">Save</button><button type="button" class="fw-menu-cancel-btn fw-item-action--hidden" data-fw-editor-action="cancel">Cancel</button>`;
-    anchor.insertAdjacentElement('afterend', bar);
-  }
+  void handleEditItem(wrapper);
 }
 
 function ensureDelegation(root: HTMLElement) {
   if (editorRoot === root) return;
-
   editorRoot?.removeEventListener('click', handleEditorClick);
   editorRoot = root;
   root.addEventListener('click', handleEditorClick);
 }
 
-export function attachInlineEditors(root: HTMLElement, callbacks: InlineEditorCallbacks) {
+export function attachInlineEditors(root: HTMLElement, callbacks: PopupMenuEditorCallbacks) {
   editorCallbacks = callbacks;
   ensureDelegation(root);
-  ensureSectionBars(root);
-
+  ensureItemEditButtons(root);
+  ensureAddButtons(root);
   root.dataset.fwEditorRoot = '1';
-  activeSectionId = null;
-  activeSectionEl = null;
-  activeSectionBar = null;
 }
 
-export function getActiveSectionId(): SectionId | null {
-  return activeSectionId;
+/** @deprecated Popup editor has no active section state. */
+export function enterSectionEditModeById(_sectionId: string) {}
+
+/** @deprecated Popup editor has no active section state. */
+export function getActiveSectionId(): null {
+  return null;
 }
 
-export function resetInlineEditorState() {
-  activeSectionId = null;
-  activeSectionEl = null;
-  activeSectionBar = null;
-}
+/** @deprecated Popup editor has no active section state. */
+export function resetInlineEditorState() {}
 
 export function detachInlineEditors() {
   editorRoot?.removeEventListener('click', handleEditorClick);
   editorRoot = null;
   editorCallbacks = null;
-  resetInlineEditorState();
 }
