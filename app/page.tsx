@@ -15,6 +15,9 @@ export const metadata: Metadata = {
   },
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default function Page() {
   const html = getPageHtml('home');
   return <PageContent html={html} effects="home" />;

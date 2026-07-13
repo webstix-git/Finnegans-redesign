@@ -2,6 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { get, head, put } from '@vercel/blob';
 import { assertBlobWritable, isBlobStorageEnabled } from './blobConfig';
+import { syncBlobContentFromDeployIfNeeded } from './blobDeploySync';
 
 const MENU_BLOB_PATH = 'content/menu.html';
 const LOCAL_MENU_PATH = path.join(process.cwd(), 'lib', 'content', 'menu.html');
@@ -51,6 +52,7 @@ export async function readMenuContentHtml(): Promise<string> {
 
   try {
     await seedBlobFromLocalIfMissing();
+    await syncBlobContentFromDeployIfNeeded();
 
     const result = await get(MENU_BLOB_PATH, {
       access: blobAccess(),

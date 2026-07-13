@@ -2,6 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { get, head, put } from '@vercel/blob';
 import { assertBlobWritable, isBlobStorageEnabled } from './blobConfig';
+import { syncBlobContentFromDeployIfNeeded } from './blobDeploySync';
 
 const PROMOTIONS_BLOB_PATH = 'content/promotions-and-events.html';
 const LOCAL_PROMOTIONS_PATH = path.join(process.cwd(), 'lib', 'content', 'promotions-and-events.html');
@@ -59,6 +60,7 @@ export async function readPromotionsContentHtml(): Promise<string> {
 
   try {
     await seedBlobFromLocalIfMissing();
+    await syncBlobContentFromDeployIfNeeded();
 
     const result = await get(PROMOTIONS_BLOB_PATH, {
       access: blobAccess(),
