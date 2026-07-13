@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import { PageContent } from '@/components/PageContent';
-import { getPageHtml } from '@/lib/getPageHtml';
+import { getPageHtmlAsync } from '@/lib/getPageHtml';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: 'The Menu | Finnegan\'s Wake',
@@ -11,7 +14,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Page() {
-  const html = getPageHtml('menu');
+export default async function Page() {
+  const html = await getPageHtmlAsync('menu');
   return <PageContent html={html} effects="scroll" />;
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { PageContent } from '@/components/PageContent';
-import { getPageHtml } from '@/lib/getPageHtml';
+import { getPageHtmlAsync } from '@/lib/getPageHtml';
 
 export const metadata: Metadata = {
   title: 'Promotions & Events | Finnegan\'s Wake',
@@ -11,7 +11,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Page() {
-  const html = getPageHtml('promotions-and-events');
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+export default async function Page() {
+  const html = await getPageHtmlAsync('promotions-and-events');
   return <PageContent html={html} effects="scroll-promo" />;
 }

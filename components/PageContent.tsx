@@ -1,16 +1,34 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { forwardRef, useEffect, useLayoutEffect, useRef } from 'react';
 import { useFinnegansEffects, type EffectsMode } from '@/hooks/useFinnegansEffects';
 
 interface PageContentProps {
   html: string;
   effects: EffectsMode;
+  onHtmlRendered?: () => void;
 }
 
-export function PageContent({ html, effects }: PageContentProps) {
+export const PageContent = forwardRef<HTMLDivElement, PageContentProps>(function PageContent(
+  { html, effects, onHtmlRendered },
+  forwardedRef
+) {
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const setContainerRef = (el: HTMLDivElement | null) => {
+    containerRef.current = el;
+    if (typeof forwardedRef === 'function') {
+      forwardedRef(el);
+    } else if (forwardedRef) {
+      forwardedRef.current = el;
+    }
+  };
+
   useFinnegansEffects(containerRef, effects);
+
+  useLayoutEffect(() => {
+    onHtmlRendered?.();
+  }, [html, onHtmlRendered]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -56,9 +74,9 @@ export function PageContent({ html, effects }: PageContentProps) {
 
   return (
     <div
-      ref={containerRef}
+      ref={setContainerRef}
       suppressHydrationWarning
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );
-}
+});

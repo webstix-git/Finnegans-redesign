@@ -1,0 +1,899 @@
+/* Section-level inline editor controls */
+.fw-section-edit-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  padding-top: 12px;
+  position: relative;
+  z-index: 3;
+  pointer-events: auto;
+}
+
+#apps .fw-menu-edit-btn {
+  color: #a23a2c;
+  border: 1px solid rgba(162, 58, 44, 0.45);
+  background: rgba(162, 58, 44, 0.1);
+}
+
+#apps .fw-menu-edit-btn:hover {
+  background: #a23a2c;
+  color: #f2e7d2;
+}
+
+#salads .fw-menu-edit-btn,
+#mains .fw-menu-edit-btn {
+  border: 1px solid rgba(236, 225, 203, 0.35);
+  background: rgba(236, 225, 203, 0.08);
+  color: #ece1cb;
+}
+
+#salads .fw-menu-edit-btn:hover,
+#mains .fw-menu-edit-btn:hover {
+  background: #ece1cb;
+  color: #1a120c;
+  border-color: #ece1cb;
+}
+
+
+#drafts .fw-menu-edit-btn {
+  color: #a23a2c;
+  border: 1px solid rgba(162, 58, 44, 0.45);
+  background: rgba(162, 58, 44, 0.1);
+}
+
+#drafts .fw-menu-edit-btn:hover {
+  background: #a23a2c;
+  color: #f2e7d2;
+}
+
+.fw-section-editing .fw-menu-editable {
+  outline: none;
+}
+
+/* Draft list — only beer items left-aligned; headers & promos centered */
+#drafts ul li,
+#drafts li.fw-menu-editable {
+  display: list-item;
+  list-style: none;
+  text-align: left;
+}
+
+#drafts p.fw-menu-editable {
+  display: block;
+  margin-top: 0;
+  margin-bottom: 0;
+  text-align: center;
+}
+
+#drafts .fw-draft-board-header {
+  text-align: center;
+}
+
+#drafts:not(.fw-section-editing) .fw-menu-editable {
+  cursor: default;
+}
+
+#drafts .fw-section-edit-bar {
+  margin-top: 32px;
+  padding-top: 0;
+  justify-content: center;
+  width: 100%;
+}
+
+#schedule .fw-promo-card-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+}
+
+#schedule .fw-promo-card-wrap .fw-promo-card {
+  width: 100%;
+  flex: 1 1 auto;
+}
+
+#schedule .fw-promo-card-wrap--feature {
+  height: auto;
+}
+
+#schedule .fw-promo-editable {
+  display: inline;
+}
+
+#schedule li .fw-promo-editable {
+  display: inline;
+}
+
+#schedule .fw-promo-edit-bar {
+  margin-top: 14px;
+  margin-bottom: 0;
+  padding-top: 0;
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  flex-shrink: 0;
+  justify-content: flex-start;
+}
+
+#schedule .fw-promo-card.fw-promo-editing .fw-promo-editable {
+  outline: none;
+}
+
+#schedule .fw-promo-editable.fw-inline-field[contenteditable='true']:focus {
+  background: rgba(236, 225, 203, 0.1);
+  box-shadow: inset 0 -1px 0 rgba(236, 225, 203, 0.45);
+  border-radius: 2px;
+}
+
+#schedule .fw-menu-edit-btn {
+  border: 1px solid rgba(236, 225, 203, 0.35);
+  background: rgba(236, 225, 203, 0.08);
+  color: #ece1cb;
+}
+
+#schedule .fw-menu-edit-btn:hover {
+  background: #ece1cb;
+  color: #1a120c;
+}
+
+#drafts .fw-inline-field[contenteditable='true'] {
+  outline: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+#drafts .fw-inline-field[contenteditable='true']:hover {
+  background: rgba(236, 225, 203, 0.08);
+}
+
+#drafts .fw-inline-field[contenteditable='true']:focus {
+  background: rgba(236, 225, 203, 0.1);
+  box-shadow: inset 0 -1px 0 rgba(236, 225, 203, 0.45);
+}
+
+/* Single edit button below the menu (legacy) */
+.fw-edit-menu-bar {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 28px 24px 48px;
+  text-align: center;
+  background: #f2e7d2;
+}
+
+.fw-menu-edit-btn--primary {
+  display: inline-block;
+  width: auto;
+  min-width: 220px;
+  padding: 14px 32px;
+  font-size: 14px;
+  letter-spacing: 0.16em;
+  background: #a23a2c;
+  color: #f2e7d2;
+  border-color: #a23a2c;
+}
+
+.fw-menu-edit-btn--primary:hover {
+  background: #7a2a1f;
+  color: #f2e7d2;
+  border-color: #7a2a1f;
+}
+
+.fw-editor-loading,
+.fw-editor-error {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #16100c;
+  color: #f2e7d2;
+  font-family: Oswald, sans-serif;
+  padding: 24px;
+  text-align: center;
+}
+
+.fw-editor-error {
+  color: #ffb4a8;
+}
+
+/* Inline editable fields */
+.fw-menu-editable {
+  position: relative;
+}
+
+p .fw-menu-editable {
+  display: block;
+  margin-top: 6px;
+}
+
+.fw-item-controls {
+  display: none;
+}
+
+.fw-menu-editable.fw-item-editing {
+  outline: none;
+}
+
+.fw-inline-field[contenteditable='true'] {
+  outline: none;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  cursor: text;
+  border-radius: 0;
+  transition: background 0.15s ease;
+}
+
+.fw-inline-field[contenteditable='true']:hover {
+  background: rgba(162, 58, 44, 0.04);
+}
+
+#salads .fw-inline-field[contenteditable='true']:hover,
+#mains .fw-inline-field[contenteditable='true']:hover {
+  background: rgba(236, 225, 203, 0.06);
+}
+
+.fw-inline-field[contenteditable='true']:focus {
+  background: rgba(162, 58, 44, 0.06);
+  box-shadow: inset 0 -2px 0 rgba(162, 58, 44, 0.45);
+}
+
+#salads .fw-inline-field[contenteditable='true']:focus,
+#mains .fw-inline-field[contenteditable='true']:focus,
+#drafts .fw-inline-field[contenteditable='true']:focus {
+  background: rgba(236, 225, 203, 0.08);
+  box-shadow: inset 0 -2px 0 rgba(236, 225, 203, 0.5);
+}
+
+.fw-section-editing [data-fw-field='price']:empty {
+  display: none;
+}
+
+.fw-inline-category {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  font-family: Oswald, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: inherit;
+  opacity: 0.85;
+}
+
+.fw-inline-category-select {
+  padding: 5px 8px;
+  border-radius: 3px;
+  border: 1px solid rgba(162, 58, 44, 0.35);
+  background: rgba(255, 255, 255, 0.92);
+  color: #2a1d12;
+  font-family: Montserrat, sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+#salads .fw-inline-category-select,
+#mains .fw-inline-category-select,
+#drafts .fw-inline-category-select {
+  border-color: rgba(236, 225, 203, 0.35);
+  background: rgba(22, 16, 12, 0.85);
+  color: #f2e7d2;
+}
+
+.fw-item-action--hidden {
+  display: none !important;
+}
+
+.fw-menu-edit-btn,
+.fw-menu-save-btn,
+.fw-menu-cancel-btn {
+  display: inline-block;
+  width: auto;
+  margin-top: 0;
+  padding: 7px 14px;
+  border-radius: 3px;
+  font-family: Oswald, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.fw-menu-save-btn {
+  border: 1px solid #2d6a3e;
+  background: rgba(45, 106, 62, 0.15);
+  color: #2d6a3e;
+}
+
+.fw-menu-save-btn:hover:not(:disabled) {
+  background: #2d6a3e;
+  color: #f2e7d2;
+}
+
+.fw-menu-save-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.fw-menu-cancel-btn {
+  border: 1px solid rgba(90, 54, 30, 0.35);
+  background: transparent;
+  color: #7a6346;
+}
+
+.fw-menu-cancel-btn:hover {
+  background: rgba(90, 54, 30, 0.08);
+}
+
+#salads .fw-menu-cancel-btn,
+#mains .fw-menu-cancel-btn,
+#drafts .fw-menu-cancel-btn {
+  border-color: rgba(236, 225, 203, 0.3);
+  color: #ece1cb;
+}
+
+#salads .fw-menu-cancel-btn:hover,
+#mains .fw-menu-cancel-btn:hover,
+#drafts .fw-menu-cancel-btn:hover {
+  background: rgba(236, 225, 203, 0.1);
+}
+
+#salads .fw-menu-save-btn,
+#mains .fw-menu-save-btn,
+#drafts .fw-menu-save-btn {
+  border-color: #4a9e62;
+  background: rgba(74, 158, 98, 0.15);
+  color: #8fd4a0;
+}
+
+#salads .fw-menu-save-btn:hover:not(:disabled),
+#mains .fw-menu-save-btn:hover:not(:disabled),
+#drafts .fw-menu-save-btn:hover:not(:disabled) {
+  background: #4a9e62;
+  color: #f2e7d2;
+}
+
+.fw-editor-toolbar-status {
+  font-family: Oswald, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #8fd4a0;
+  padding: 0 4px;
+}
+
+.fw-editor-toolbar-status--error {
+  color: #ffb4a8;
+}
+
+.fw-editor-status-strip {
+  background: var(--ink2);
+  border-bottom: 1px solid rgba(230, 219, 198, 0.1);
+}
+
+.fw-editor-status-strip__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  font-family: Oswald, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #8fd4a0;
+}
+
+.fw-editor-status-strip--error .fw-editor-status-strip__inner {
+  color: #ffb4a8;
+}
+
+/* Editor toolbar below breadcrumb */
+.fw-editor-toolbar-bar {
+  background: var(--ink2);
+  border-bottom: 1px solid rgba(230, 219, 198, 0.1);
+}
+
+.fw-editor-toolbar {
+  position: static;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 24px;
+}
+
+.fw-editor-toolbar-label {
+  font-family: Oswald, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #ece1cb;
+  padding-right: 8px;
+  border-right: 1px solid rgba(236, 225, 203, 0.2);
+}
+
+.fw-editor-toolbar-btn {
+  font-family: Oswald, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 7px 12px;
+  border-radius: 3px;
+  border: 1px solid rgba(236, 225, 203, 0.3);
+  background: transparent;
+  color: #f2e7d2;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.fw-editor-toolbar-btn:hover {
+  background: rgba(236, 225, 203, 0.12);
+}
+
+.fw-editor-toolbar-btn--logout {
+  color: #ffb4a8;
+  border-color: rgba(255, 180, 168, 0.35);
+}
+
+.fw-item-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.fw-item-name-main {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.fw-item-delete {
+  all: unset;
+  box-sizing: border-box;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 3px;
+  color: #a23a2c;
+  cursor: pointer;
+  opacity: 0.85;
+  transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+.fw-section-editing .fw-item-delete,
+.fw-promo-editing .fw-item-delete {
+  display: inline-flex;
+}
+
+.fw-item-delete:hover {
+  background: rgba(162, 58, 44, 0.12);
+  color: #7a2a1f;
+  opacity: 1;
+}
+
+#salads.fw-section-editing .fw-item-delete,
+#mains.fw-section-editing .fw-item-delete,
+#drafts.fw-section-editing .fw-item-delete,
+.fw-promo-editing .fw-item-delete {
+  color: #ffb4a8;
+}
+
+#salads.fw-section-editing .fw-item-delete:hover,
+#mains.fw-section-editing .fw-item-delete:hover,
+#drafts.fw-section-editing .fw-item-delete:hover,
+.fw-promo-editing .fw-item-delete:hover {
+  background: rgba(255, 180, 168, 0.14);
+  color: #ffd0c8;
+}
+
+.fw-delete-confirm-message {
+  margin: 0;
+  font-family: Montserrat, sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  color: #4a3728;
+}
+
+.fw-modal-btn--danger {
+  background: #a23a2c;
+  color: #f2e7d2;
+  border-color: #a23a2c;
+}
+
+.fw-modal-btn--danger:hover {
+  background: #7a2a1f;
+}
+
+/* Modal */
+.fw-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(10, 7, 5, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fw-fade-in 0.2s ease;
+}
+
+@keyframes fw-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fw-modal {
+  width: 100%;
+  max-width: 480px;
+  background: #f4f0e8;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5);
+  animation: fw-slide-up 0.25s ease;
+}
+
+.fw-modal--wide {
+  max-width: 720px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.fw-modal-body--scroll {
+  overflow-y: auto;
+  max-height: min(62vh, 640px);
+}
+
+.fw-all-section {
+  margin-bottom: 28px;
+}
+
+.fw-all-section h3 {
+  font-family: Anton, sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #2a1d12;
+  margin: 0 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #ddd0bc;
+}
+
+.fw-all-item-card {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 12px;
+  align-items: start;
+  background: #fff;
+  border: 1px solid #e0d5c3;
+  border-radius: 6px;
+  padding: 14px;
+  margin-bottom: 10px;
+}
+
+.fw-all-item-num {
+  font-family: Oswald, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #a23a2c;
+  padding-top: 10px;
+  text-align: center;
+}
+
+.fw-all-item-fields {
+  display: grid;
+  gap: 10px;
+}
+
+.fw-all-item-fields .fw-modal-field {
+  margin-bottom: 0;
+}
+
+.fw-all-item-fields .fw-modal-field input {
+  padding: 9px 12px;
+  font-size: 14px;
+}
+
+@keyframes fw-slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fw-modal-header {
+  background: #16100c;
+  color: #f2e7d2;
+  padding: 20px 24px;
+}
+
+.fw-modal-header h2 {
+  margin: 0;
+  font-family: Anton, sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.fw-modal-header p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #bca988;
+}
+
+.fw-modal-body {
+  padding: 24px;
+  display: grid;
+  gap: 16px;
+}
+
+.fw-modal-field label {
+  display: block;
+  font-family: Oswald, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #4a3728;
+  margin-bottom: 6px;
+}
+
+.fw-modal-field input,
+.fw-modal-field textarea,
+.fw-modal-field select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 14px;
+  border-radius: 3px;
+  border: 1.5px solid #ddd0bc;
+  background: #fff;
+  color: #2a1d12;
+  font-family: Montserrat, sans-serif;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.fw-modal-field input:focus,
+.fw-modal-field textarea:focus,
+.fw-modal-field select:focus {
+  border-color: #a23a2c;
+  box-shadow: 0 0 0 3px rgba(162, 58, 44, 0.12);
+}
+
+.fw-modal-field textarea {
+  min-height: 80px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.fw-modal-footer {
+  display: flex;
+  gap: 10px;
+  padding: 0 24px 24px;
+}
+
+.fw-modal-btn {
+  flex: 1;
+  padding: 12px 16px;
+  border-radius: 3px;
+  font-family: Oswald, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.fw-modal-btn:active {
+  transform: scale(0.98);
+}
+
+.fw-modal-btn--cancel {
+  background: #fff;
+  border-color: #ddd0bc;
+  color: #4a3728;
+}
+
+.fw-modal-btn--cancel:hover {
+  background: #faf7f2;
+}
+
+.fw-modal-btn--save {
+  background: #a23a2c;
+  color: #f2e7d2;
+  border-color: #a23a2c;
+}
+
+.fw-modal-btn--save:hover {
+  background: #7a2a1f;
+}
+
+.fw-modal-btn--save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.fw-modal-error {
+  margin: 0 24px;
+  padding: 10px 14px;
+  border-radius: 3px;
+  background: #fdecea;
+  border: 1px solid #f5c6c2;
+  color: #7a1f1a;
+  font-size: 13px;
+}
+
+/* Login page */
+.fw-login-root {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: #16100c;
+  background-image:
+    radial-gradient(120% 80% at 50% 0%, rgba(162, 58, 44, 0.18), transparent 60%),
+    linear-gradient(rgba(15, 10, 7, 0.92), rgba(15, 10, 7, 0.95));
+}
+
+.fw-login-card {
+  width: 100%;
+  max-width: 400px;
+  background: rgba(242, 231, 210, 0.04);
+  border: 1px solid rgba(236, 225, 203, 0.18);
+  border-radius: 6px;
+  padding: 40px 36px;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.45);
+}
+
+.fw-login-logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 2px solid rgba(236, 225, 203, 0.45);
+  display: block;
+  margin: 0 auto 20px;
+  object-fit: cover;
+}
+
+.fw-login-title {
+  font-family: Anton, sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  text-transform: uppercase;
+  text-align: center;
+  color: #f2e7d2;
+  margin: 0 0 6px;
+}
+
+.fw-login-sub {
+  text-align: center;
+  font-size: 13px;
+  color: #bca988;
+  margin: 0 0 28px;
+}
+
+.fw-login-field {
+  margin-bottom: 16px;
+}
+
+.fw-login-field label {
+  display: block;
+  font-family: Oswald, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #ece1cb;
+  margin-bottom: 6px;
+}
+
+.fw-login-field input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border-radius: 3px;
+  border: 1px solid rgba(236, 225, 203, 0.25);
+  background: rgba(15, 10, 7, 0.6);
+  color: #f2e7d2;
+  font-family: Montserrat, sans-serif;
+  font-size: 15px;
+  outline: none;
+}
+
+.fw-login-field input:focus {
+  border-color: #a23a2c;
+  box-shadow: 0 0 0 3px rgba(162, 58, 44, 0.2);
+}
+
+.fw-login-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 13px;
+  border-radius: 3px;
+  border: 1px solid #a23a2c;
+  background: #a23a2c;
+  color: #f2e7d2;
+  font-family: Oswald, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.fw-login-btn:hover {
+  background: #7a2a1f;
+}
+
+.fw-login-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.fw-login-error {
+  margin-bottom: 14px;
+  padding: 10px 14px;
+  border-radius: 3px;
+  background: rgba(162, 58, 44, 0.18);
+  border: 1px solid rgba(162, 58, 44, 0.4);
+  color: #ffb4a8;
+  font-size: 13px;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .fw-editor-toolbar {
+    justify-content: center;
+    padding: 10px 16px;
+  }
+
+  .fw-editor-status-strip__inner {
+    padding: 10px 16px;
+    font-size: 10px;
+  }
+
+  .fw-item-controls {
+    gap: 6px;
+  }
+
+  .fw-inline-category {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .fw-menu-edit-btn,
+  .fw-menu-save-btn,
+  .fw-menu-cancel-btn {
+    padding: 8px 12px;
+    font-size: 10px;
+  }
+
+  .fw-item-delete {
+    width: 28px;
+    height: 28px;
+  }
+}

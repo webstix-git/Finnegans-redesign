@@ -254,6 +254,11 @@ section#top > div:last-of-type {
     gap: 36px !important;
   }
 
+  .fw-promotions-footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 36px !important;
+  }
+
   .fw-footer-links {
     justify-self: start !important;
     text-align: left !important;
@@ -531,4 +536,12 @@ section#top > div:last-of-type {
   .fw-carousel-next {
     right: 10px;
   }
+}
+
+#drafts ul li {
+  text-align: left;
+}
+
+#drafts .fw-draft-board-header {
+  text-align: center;
 }

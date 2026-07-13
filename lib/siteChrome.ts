@@ -91,6 +91,71 @@ export function renderBreadcrumbs(slug: string): string {
   </nav>`;
 }
 
+export function renderPromotionsFooter(): string {
+  return `<!-- FOOTER -->
+  <footer style="background-color:#0c0805;padding:clamp(46px,6vw,72px) 0 36px;border-top:1px solid rgba(230,219,198,.16);background-image:linear-gradient(rgba(9,6,4,.92),rgba(9,6,4,.95)),url('/assets/99fb2d40-5485-413c-8e44-53251a25762d.jpg');background-size:cover;background-position:center;">
+    <div style="max-width:1200px;margin:0 auto;padding:0 24px;">
+        <div class="fw-promotions-footer-grid" style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,0.85fr) minmax(0,1.15fr);gap:40px;align-items:start;">
+        <div>
+          <div style="display:flex;align-items:center;gap:13px;">
+            <img src="${LOGO_SRC}" alt="Finnegan's Wake" style="width:54px;height:54px;border-radius:50%;border:1.5px solid rgba(230,219,198,.5);">
+            <div>
+              <div style="font-family:Oswald,sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.1em;font-size:18px;color:var(--cream);line-height:1.1;">Finnegan's Wake</div>
+              <div style="font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.22em;font-size:10.5px;color:var(--gold2);margin-top:4px;font-weight:400;">Irish Pub · Est. 2006</div>
+            </div>
+          </div>
+          <div style="display:grid;gap:14px;margin-top:20px;">
+            <div style="display:flex;gap:10px;align-items:flex-start;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gold2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-top:3px;flex-shrink:0;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              <span style="font-family:Montserrat,sans-serif;font-size:14px;line-height:1.65;color:var(--cream2);">305 South Avenue<br>Springfield, MO 65806</span>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gold2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.86 19.79 19.79 0 010 1.25a2 2 0 012-2.18h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 6.91a16 16 0 006.29 6.29l.35-.35a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"></path></svg>
+              <a href="tel:+14178691500" style="font-family:Montserrat,sans-serif;font-size:14px;color:var(--cream2);text-decoration:none;" style-hover="color:var(--gold2)">(417) 869-1500</a>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gold2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+              <a href="mailto:finneganssgf@gmail.com" style="font-family:Montserrat,sans-serif;font-size:14px;color:var(--cream2);text-decoration:none;" style-hover="color:var(--gold2)">finneganssgf@gmail.com</a>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
+              <span style="font-family:Montserrat,sans-serif;font-size:14px;color:var(--muted);">Follow us on:</span>
+              <a href="${INSTAGRAM_URL}" target="_blank" rel="noopener noreferrer" aria-label="Instagram" style="width:38px;height:38px;border:1px solid rgba(230,219,198,.35);border-radius:4px;display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--cream2);transition:border-color .2s;" style-hover="border-color:var(--gold2);color:var(--gold2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
+              <a href="${FACEBOOK_URL}" target="_blank" rel="noopener noreferrer" aria-label="Facebook" style="width:38px;height:38px;border:1px solid rgba(230,219,198,.35);border-radius:4px;display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--cream2);font-family:Oswald,sans-serif;font-weight:600;font-size:14px;transition:border-color .2s;" style-hover="border-color:var(--gold2);color:var(--gold2)">f</a>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.26em;font-size:16px;color:var(--gold2);margin-bottom:20px;">Quick Links</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px 28px;font-family:Montserrat,sans-serif;font-size:15px;">
+            <div style="display:grid;gap:13px;">
+              ${footerQuickLink('/menu', 'Menu')}
+              ${footerQuickLink('/promotions-and-events', 'Promotions & Events')}
+              ${footerQuickLink('/gallery', 'Gallery')}
+              ${footerQuickLink('/reviews', 'Reviews')}
+            </div>
+            <div style="display:grid;gap:13px;">
+              ${footerQuickLink('/about-us', 'About Us')}
+              ${footerQuickLink('/faq', 'FAQs')}
+              ${footerQuickLink('/contact-us', 'Visit / Contact')}
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.26em;font-size:16px;color:var(--gold2);margin-bottom:20px;">Hours</div>
+          <div style="display:grid;gap:10px;">
+            <div style="display:flex;justify-content:space-between;gap:16px;font-family:Montserrat,sans-serif;font-size:15px;"><span style="color:var(--muted);">Mon</span><span style="color:var(--cream2);">Closed</span></div>
+            <div style="display:flex;justify-content:space-between;gap:16px;font-family:Montserrat,sans-serif;font-size:15px;"><span style="color:var(--muted);">Tue – Sun</span><span style="color:var(--cream2);">4 p.m. – Close</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="border-top:1px solid rgba(230,219,198,.14);margin-top:40px;padding-top:22px;display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between;font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.14em;font-size:16px;color:var(--muted);">
+        <span>© 2026 Finnegan's Wake Irish Pub &amp; Restaurant</span>
+        <span style="color:var(--gold2);">You must be 21+ to enter · Please drink responsibly</span>
+      </div>
+    </div>
+  </footer>`;
+}
+
 export function renderFooter(): string {
   return `<!-- FOOTER -->
   <footer style="background-color:#0c0805;padding:clamp(48px,6vw,76px) 0 0;background-image:linear-gradient(rgba(9,6,4,.92),rgba(9,6,4,.95)),url('/assets/a1708b39-e7dd-49b7-b474-65a8c1be8c3b.jpg');background-size:cover;background-position:center;">

@@ -38,3 +38,4 @@ next-env.d.ts
 # migration artifacts
 /extracted
 /scripts
+.vercel
