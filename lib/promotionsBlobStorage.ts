@@ -1,11 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { get, head, put } from '@vercel/blob';
-<<<<<<< HEAD
-import { isMenuBlobStorageEnabled } from './menuBlobStorage';
-=======
 import { assertBlobWritable, isBlobStorageEnabled } from './blobConfig';
->>>>>>> aec7395 (admin fixes)
 
 const PROMOTIONS_BLOB_PATH = 'content/promotions-and-events.html';
 const LOCAL_PROMOTIONS_PATH = path.join(process.cwd(), 'lib', 'content', 'promotions-and-events.html');
@@ -53,11 +49,7 @@ async function seedBlobFromLocalIfMissing(): Promise<void> {
 }
 
 export function isPromotionsBlobStorageEnabled(): boolean {
-<<<<<<< HEAD
-  return isMenuBlobStorageEnabled();
-=======
   return isBlobStorageEnabled();
->>>>>>> aec7395 (admin fixes)
 }
 
 export async function readPromotionsContentHtml(): Promise<string> {
@@ -76,10 +68,6 @@ export async function readPromotionsContentHtml(): Promise<string> {
     if (result?.statusCode === 200 && result.stream) {
       const blobHtml = await streamToText(result.stream);
       if (isCorruptedPromotionsHtml(blobHtml)) {
-<<<<<<< HEAD
-        console.warn('[promotions-blob] corrupted blob content, using local file');
-        return readLocalPromotionsHtml();
-=======
         console.warn('[promotions-blob] corrupted blob content, repairing from deploy snapshot');
         const local = await readLocalPromotionsHtml();
         await put(PROMOTIONS_BLOB_PATH, local, {
@@ -89,7 +77,6 @@ export async function readPromotionsContentHtml(): Promise<string> {
           allowOverwrite: true,
         });
         return local;
->>>>>>> aec7395 (admin fixes)
       }
       return blobHtml;
     }
@@ -101,24 +88,12 @@ export async function readPromotionsContentHtml(): Promise<string> {
 }
 
 export async function writePromotionsContentHtml(html: string): Promise<'blob' | 'local' | 'both'> {
-<<<<<<< HEAD
-=======
   assertBlobWritable();
 
->>>>>>> aec7395 (admin fixes)
   let wroteBlob = false;
   let wroteLocal = false;
 
   if (isPromotionsBlobStorageEnabled()) {
-<<<<<<< HEAD
-    await put(PROMOTIONS_BLOB_PATH, html, {
-      access: blobAccess(),
-      contentType: 'text/html; charset=utf-8',
-      addRandomSuffix: false,
-      allowOverwrite: true,
-    });
-    wroteBlob = true;
-=======
     try {
       await put(PROMOTIONS_BLOB_PATH, html, {
         access: blobAccess(),
@@ -131,7 +106,6 @@ export async function writePromotionsContentHtml(html: string): Promise<'blob' |
       const detail = err instanceof Error ? err.message : String(err);
       throw new Error(`Failed to save promotions to Vercel Blob: ${detail}`);
     }
->>>>>>> aec7395 (admin fixes)
   }
 
   try {
