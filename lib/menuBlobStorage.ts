@@ -1,15 +1,23 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { get, head, put } from '@vercel/blob';
+<<<<<<< HEAD
+=======
+import { assertBlobWritable, isBlobStorageEnabled } from './blobConfig';
+>>>>>>> aec7395 (admin fixes)
 
 const MENU_BLOB_PATH = 'content/menu.html';
 const LOCAL_MENU_PATH = path.join(process.cwd(), 'lib', 'content', 'menu.html');
 
 export function isMenuBlobStorageEnabled(): boolean {
+<<<<<<< HEAD
   return Boolean(
     process.env.BLOB_READ_WRITE_TOKEN ||
       (process.env.BLOB_STORE_ID && process.env.VERCEL_OIDC_TOKEN)
   );
+=======
+  return isBlobStorageEnabled();
+>>>>>>> aec7395 (admin fixes)
 }
 
 function blobAccess(): 'public' | 'private' {
@@ -70,10 +78,16 @@ export async function readMenuContentHtml(): Promise<string> {
 }
 
 export async function writeMenuContentHtml(html: string): Promise<'blob' | 'local' | 'both'> {
+<<<<<<< HEAD
+=======
+  assertBlobWritable();
+
+>>>>>>> aec7395 (admin fixes)
   let wroteBlob = false;
   let wroteLocal = false;
 
   if (isMenuBlobStorageEnabled()) {
+<<<<<<< HEAD
     await put(MENU_BLOB_PATH, html, {
       access: blobAccess(),
       contentType: 'text/html; charset=utf-8',
@@ -81,6 +95,20 @@ export async function writeMenuContentHtml(html: string): Promise<'blob' | 'loca
       allowOverwrite: true,
     });
     wroteBlob = true;
+=======
+    try {
+      await put(MENU_BLOB_PATH, html, {
+        access: blobAccess(),
+        contentType: 'text/html; charset=utf-8',
+        addRandomSuffix: false,
+        allowOverwrite: true,
+      });
+      wroteBlob = true;
+    } catch (err) {
+      const detail = err instanceof Error ? err.message : String(err);
+      throw new Error(`Failed to save menu to Vercel Blob: ${detail}`);
+    }
+>>>>>>> aec7395 (admin fixes)
   }
 
   try {

@@ -33,7 +33,11 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+<<<<<<< HEAD
     assertMenuEditorAuth(req);
+=======
+    assertMenuEditorAuth(req, { required: true });
+>>>>>>> aec7395 (admin fixes)
 
     const body = (await req.json()) as { data?: PromoScheduleData };
     if (!body.data) {
