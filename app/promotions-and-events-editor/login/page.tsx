@@ -68,8 +68,7 @@ export default function PromotionsEditorLoginPage() {
           alt="Finnegan's Wake"
           className="fw-login-logo"
         />
-        <h1 className="fw-login-title">Promotions Editor</h1>
-        <p className="fw-login-sub">Sign in to edit weekly specials</p>
+        <h1 className="fw-login-title">Admin Editor</h1>
 
         {error ? <div className="fw-login-error">{error}</div> : null}
 

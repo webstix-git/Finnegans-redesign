@@ -19,7 +19,7 @@ export const EditorToolbar = forwardRef<HTMLDivElement, EditorToolbarProps>(
             rel="noreferrer"
             className="fw-editor-toolbar-btn"
           >
-            Editor Preview
+            Preview
           </a>
           <button
             type="button"

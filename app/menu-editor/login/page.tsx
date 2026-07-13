@@ -68,8 +68,7 @@ export default function MenuEditorLoginPage() {
           alt="Finnegan's Wake"
           className="fw-login-logo"
         />
-        <h1 className="fw-login-title">Menu Editor</h1>
-        <p className="fw-login-sub">Sign in to edit the live menu</p>
+        <h1 className="fw-login-title">Admin Editor</h1>
 
         {error ? <div className="fw-login-error">{error}</div> : null}
 
@@ -107,11 +106,6 @@ export default function MenuEditorLoginPage() {
             {loading ? 'Signing in…' : 'Sign In'}
           </button>
         </form>
-
-        <p className="fw-login-sub" style={{ marginTop: 20, marginBottom: 0, fontSize: 12 }}>
-          If login fails after a password change, type credentials manually (don&apos;t use saved
-          autofill) and try again.
-        </p>
       </div>
     </div>
   );
