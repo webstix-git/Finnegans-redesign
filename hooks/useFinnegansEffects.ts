@@ -1,6 +1,7 @@
 'use client';
 
 import { RefObject, useEffect } from 'react';
+import { INTERNATIONAL_PHONE_ERROR, isValidInternationalPhone } from '@/lib/phoneValidation';
 
 export type EffectsMode = 'home' | 'scroll' | 'scroll-promo' | 'gallery' | 'faq' | 'contact';
 
@@ -29,22 +30,76 @@ function setupContactForm() {
   });
 
   const form = document.getElementById('fw-contact-form');
-  const success = document.getElementById('fw-form-success');
   const btn = document.getElementById('fw-submit-btn');
+  const phoneInput = document.getElementById('fw-contact-phone') as HTMLInputElement | null;
+  const phoneError = document.getElementById('fw-phone-error');
+  const formError = document.getElementById('fw-form-error');
+  const submitLabel = btn?.textContent ?? 'Send Us a Note';
+
+  const defaultBorder = 'rgba(230,219,198,.22)';
+  const errorBorder = '#e07070';
+
+  const clearPhoneError = () => {
+    if (phoneInput) phoneInput.style.borderColor = defaultBorder;
+    if (phoneError) phoneError.style.display = 'none';
+  };
+
+  const showPhoneError = () => {
+    if (phoneInput) {
+      phoneInput.style.borderColor = errorBorder;
+      phoneInput.focus();
+    }
+    if (phoneError) {
+      phoneError.textContent = INTERNATIONAL_PHONE_ERROR;
+      phoneError.style.display = 'block';
+    }
+  };
+
+  const setSubmitting = (submitting: boolean) => {
+    if (!btn) return;
+    btn.textContent = submitting ? 'Sending…' : submitLabel;
+    btn.style.opacity = submitting ? '0.7' : '1';
+    btn.style.pointerEvents = submitting ? 'none' : 'auto';
+  };
+
+  if (phoneInput) {
+    const onPhoneInput = () => clearPhoneError();
+    phoneInput.addEventListener('input', onPhoneInput);
+    cleanups.push(() => phoneInput.removeEventListener('input', onPhoneInput));
+  }
+
   if (form && btn) {
-    const onSubmit = (e: Event) => {
+    const onSubmit = async (e: Event) => {
       e.preventDefault();
-      btn.textContent = 'Sending…';
-      btn.style.opacity = '0.7';
-      window.setTimeout(() => {
-        (form as HTMLFormElement).reset();
-        btn.textContent = 'Send Us a Note';
-        btn.style.opacity = '1';
-        if (success) success.style.display = 'block';
-        window.setTimeout(() => {
-          if (success) success.style.display = 'none';
-        }, 5000);
-      }, 1000);
+      clearPhoneError();
+      if (formError) formError.style.display = 'none';
+
+      const formEl = form as HTMLFormElement;
+      const phoneValue = phoneInput?.value.trim() ?? '';
+      if (!isValidInternationalPhone(phoneValue)) {
+        showPhoneError();
+        return;
+      }
+
+      if (!formEl.reportValidity()) return;
+
+      setSubmitting(true);
+
+      try {
+        const response = await fetch(formEl.action, {
+          method: 'POST',
+          body: new FormData(formEl),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Form submit failed (${response.status})`);
+        }
+
+        window.location.href = '/thank-you';
+      } catch {
+        setSubmitting(false);
+        if (formError) formError.style.display = 'block';
+      }
     };
     form.addEventListener('submit', onSubmit);
     cleanups.push(() => form.removeEventListener('submit', onSubmit));

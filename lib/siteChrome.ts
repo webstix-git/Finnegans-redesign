@@ -21,6 +21,7 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   sitemap: 'Sitemap',
   'privacy-policy': 'Privacy Policy',
   'contact-us': 'Contact Us',
+  'thank-you': 'Thank You',
 };
 
 const NAV_LINK_BASE =
