@@ -3,7 +3,20 @@ import type { MetadataRoute } from 'next';
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://finneganswake.com';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = ['', '/menu', '/about-us', '/promotions-and-events', '/reviews', '/gallery', '/faq', '/contact-us', '/sitemap', '/privacy-policy'];
+  const routes = [
+    '',
+    '/menu',
+    '/about-us',
+    '/promotions-and-events',
+    '/reviews',
+    '/gallery',
+    '/faq',
+    '/contact-us',
+    '/sitemap',
+    '/privacy-policy',
+    '/ai-policy',
+    '/ai-readiness-service-index',
+  ];
 
   return routes.map((route) => ({
     url: `${siteUrl}${route}`,

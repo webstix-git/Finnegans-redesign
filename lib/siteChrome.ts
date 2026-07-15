@@ -20,6 +20,8 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   'promotions-and-events': 'Promotions & Events',
   sitemap: 'Sitemap',
   'privacy-policy': 'Privacy Policy',
+  'ai-policy': 'AI Policy',
+  'ai-readiness-service-index': 'AI Readiness Service Index',
   'contact-us': 'Contact Us',
   'thank-you': 'Thank You',
 };
@@ -149,9 +151,14 @@ export function renderPromotionsFooter(): string {
           </div>
         </div>
       </div>
-      <div style="border-top:1px solid rgba(230,219,198,.14);margin-top:40px;padding-top:22px;display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between;font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.14em;font-size:16px;color:var(--muted);">
+      <div style="border-top:1px solid rgba(230,219,198,.14);margin-top:40px;padding-top:22px;display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between;align-items:center;font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.14em;font-size:16px;color:var(--muted);">
         <span>© 2026 Finnegan's Wake Irish Pub &amp; Restaurant</span>
-        <span style="color:var(--gold2);">You must be 21+ to enter · Please drink responsibly</span>
+        <div style="display:flex;flex-wrap:wrap;gap:10px 24px;align-items:center;">
+          <a href="/privacy-policy" style="text-decoration:none;color:var(--muted);transition:color .2s;" style-hover="color:var(--gold2)">Privacy Policy</a>
+          <a href="/ai-policy" style="text-decoration:none;color:var(--muted);transition:color .2s;" style-hover="color:var(--gold2)">AI Policy</a>
+          <a href="/ai-readiness-service-index" style="text-decoration:none;color:var(--muted);transition:color .2s;" style-hover="color:var(--gold2)">AI Readiness Service Index</a>
+          <span style="color:var(--gold2);">You must be 21+ to enter · Please drink responsibly</span>
+        </div>
       </div>
     </div>
   </footer>`;
@@ -223,9 +230,11 @@ export function renderFooter(): string {
 
       <div style="border-top:1px solid rgba(230,219,198,.12);margin-top:48px;padding:20px 0;display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between;align-items:center;font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.14em;font-size:10.5px;color:var(--muted);">
         <span>© 2026 Finnegan's Wake LLC. All Rights Reserved.</span>
-        <div style="display:flex;gap:24px;">
+        <div style="display:flex;flex-wrap:wrap;gap:10px 24px;">
           <a href="/sitemap" style="text-decoration:none;color:var(--muted);transition:color .2s;" style-hover="color:var(--gold2)">Sitemap</a>
           <a href="/privacy-policy" style="text-decoration:none;color:var(--muted);transition:color .2s;" style-hover="color:var(--gold2)">Privacy Policy</a>
+          <a href="/ai-policy" style="text-decoration:none;color:var(--muted);transition:color .2s;" style-hover="color:var(--gold2)">AI Policy</a>
+          <a href="/ai-readiness-service-index" style="text-decoration:none;color:var(--muted);transition:color .2s;" style-hover="color:var(--gold2)">AI Readiness Service Index</a>
         </div>
       </div>
     </div>
