@@ -3,11 +3,14 @@ import { PageContent } from '@/components/PageContent';
 import { getPageHtmlAsync } from '@/lib/getPageHtml';
 
 export const metadata: Metadata = {
-  title: 'Promotions & Events | Finnegan\'s Wake',
-  description: 'Weekly trivia, live music, private events, and what\'s happening at Finnegan\'s Wake Irish Pub.',
+  title: 'Promotions & Events',
+  description:
+    "Weekly trivia, drink specials, private events, and what's happening at Finnegan's Wake — downtown Springfield's Irish pub on South Avenue since 2006.",
+  alternates: { canonical: '/promotions-and-events' },
   openGraph: {
-    title: 'Promotions & Events | Finnegan\'s Wake',
-    description: 'Weekly trivia, live music, private events, and what\'s happening at Finnegan\'s Wake Irish Pub.',
+    title: "Promotions & Events | Finnegan's Wake",
+    description:
+      "Weekly trivia, drink specials, private events, and what's happening at Finnegan's Wake — downtown Springfield's Irish pub on South Avenue since 2006.",
   },
 };
 

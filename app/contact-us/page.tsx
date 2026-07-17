@@ -3,13 +3,14 @@ import { PageContent } from '@/components/PageContent';
 import { getPageHtml } from '@/lib/getPageHtml';
 
 export const metadata: Metadata = {
-  title: 'Contact Us | Finnegan\'s Wake',
+  title: 'Contact Us – Springfield Irish Pub',
   description:
-    'Get in touch with Finnegan\'s Wake in downtown Springfield, MO. Find our hours, location, phone number, and answers to questions about events, reservations, and group gatherings.',
+    "Get in touch with Finnegan's Wake in downtown Springfield, MO. Find our hours, location, and phone number, or ask about events and group gatherings.",
+  alternates: { canonical: '/contact-us' },
   openGraph: {
-    title: 'Contact Us | Finnegan\'s Wake',
+    title: "Contact Us – Springfield Irish Pub | Finnegan's Wake",
     description:
-      'Get in touch with Finnegan\'s Wake in downtown Springfield, MO. Find our hours, location, phone number, and answers to questions about events, reservations, and group gatherings.',
+      "Get in touch with Finnegan's Wake in downtown Springfield, MO. Find our hours, location, and phone number, or ask about events and group gatherings.",
   },
 };
 

@@ -3,9 +3,10 @@ import { PageContent } from '@/components/PageContent';
 import { getPageHtml } from '@/lib/getPageHtml';
 
 export const metadata: Metadata = {
-  title: 'Reviews | Finnegan\'s Wake',
+  title: 'Reviews',
   description:
     'Read what guests say about Finnegan\'s Wake, Springfield\'s downtown Irish pub on South Avenue since 2006.',
+  alternates: { canonical: '/reviews' },
   openGraph: {
     title: 'Reviews | Finnegan\'s Wake',
     description:

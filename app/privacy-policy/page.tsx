@@ -3,8 +3,9 @@ import { PageContent } from '@/components/PageContent';
 import { getPageHtml } from '@/lib/getPageHtml';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | Finnegan\'s Wake',
+  title: 'Privacy Policy',
   description: 'Privacy policy for Finnegan\'s Wake Irish Pub in downtown Springfield, MO.',
+  alternates: { canonical: '/privacy-policy' },
   openGraph: {
     title: 'Privacy Policy | Finnegan\'s Wake',
     description: 'Privacy policy for Finnegan\'s Wake Irish Pub in downtown Springfield, MO.',

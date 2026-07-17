@@ -3,9 +3,10 @@ import { PageContent } from '@/components/PageContent';
 import { getPageHtml } from '@/lib/getPageHtml';
 
 export const metadata: Metadata = {
-  title: 'AI Readiness Service Index | Finnegan\'s Wake',
+  title: 'AI Readiness Service Index',
   description:
     'AI Readiness Service Index for Finnegan\'s Wake: oversight, privacy alignment, and responsible AI practices.',
+  alternates: { canonical: '/ai-readiness-service-index' },
   openGraph: {
     title: 'AI Readiness Service Index | Finnegan\'s Wake',
     description:

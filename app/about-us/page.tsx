@@ -3,8 +3,9 @@ import { PageContent } from '@/components/PageContent';
 import { getPageHtml } from '@/lib/getPageHtml';
 
 export const metadata: Metadata = {
-  title: 'About Us | Finnegan\'s Wake',
+  title: 'About Us',
   description: 'Twenty years of really good food, familiar faces, and the longest-running trivia in downtown Springfield.',
+  alternates: { canonical: '/about-us' },
   openGraph: {
     title: 'About Us | Finnegan\'s Wake',
     description: 'Twenty years of really good food, familiar faces, and the longest-running trivia in downtown Springfield.',

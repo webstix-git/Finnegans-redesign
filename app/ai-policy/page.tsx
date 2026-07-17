@@ -3,9 +3,10 @@ import { PageContent } from '@/components/PageContent';
 import { getPageHtml } from '@/lib/getPageHtml';
 
 export const metadata: Metadata = {
-  title: 'AI Policy | Finnegan\'s Wake',
+  title: 'AI Policy',
   description:
     'How Finnegan\'s Wake uses artificial intelligence responsibly on our website and in guest communications.',
+  alternates: { canonical: '/ai-policy' },
   openGraph: {
     title: 'AI Policy | Finnegan\'s Wake',
     description:

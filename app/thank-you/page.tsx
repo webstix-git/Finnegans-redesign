@@ -3,7 +3,7 @@ import { PageContent } from '@/components/PageContent';
 import { getPageHtml } from '@/lib/getPageHtml';
 
 export const metadata: Metadata = {
-  title: 'Thank You | Finnegan\'s Wake',
+  title: 'Thank You',
   description: 'Thank you for contacting Finnegan\'s Wake. We\'ll be in touch soon.',
   robots: { index: false, follow: false },
   openGraph: {
