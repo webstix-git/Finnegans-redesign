@@ -138,10 +138,10 @@
   <!-- CONTACT FORM -->
   <section id="contact-form" style="background:var(--ink);padding:clamp(56px,7vw,88px) 0;background-image:radial-gradient(120% 80% at 50% 0%,rgba(162,58,44,.14),transparent 55%);">
     <div style="max-width:780px;margin:0 auto;padding:0 24px;">
-      <div style="text-align:center;margin-bottom:44px;">
+      <div style="text-align:left;margin-bottom:44px;">
         <div style="font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.3em;font-size:12px;color:var(--gold2);font-weight:600;margin-bottom:14px;">Have a Question?</div>
         <h2 style="font-family:Anton,sans-serif;font-weight:400;text-transform:uppercase;line-height:1.05;font-size:clamp(28px,4vw,52px);color:var(--cream);">Send Us a Note</h2>
-        <p style="font-size:15px;line-height:1.8;color:var(--muted);margin-top:16px;max-width:480px;margin-left:auto;margin-right:auto;">Use the form below, and someone from our team will get back to you as soon as we can.</p>
+        <p style="font-size:15px;line-height:1.8;color:var(--muted);margin-top:16px;max-width:480px;">Use the form below, and someone from our team will get back to you as soon as we can.</p>
         <p style="font-size:14px;color:var(--muted);font-style:normal;margin-top:8px;">If your question is time-sensitive, calling the pub is always your best bet.</p>
       </div>
       <form id="fw-contact-form" action="/api/contact" method="post" style="display:grid;gap:18px;" novalidate>
@@ -172,11 +172,11 @@
           <label for="fw-contact-message" style="font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.16em;font-size:11px;color:var(--gold2);font-weight:500;">Message</label>
           <textarea id="fw-contact-message" name="message" placeholder="Tell us what's on your mind..." rows="6" required style="background:var(--ink2);border:1px solid rgba(230,219,198,.22);border-radius:3px;padding:14px 16px;font-size:15px;color:var(--cream);outline:none;resize:vertical;transition:border-color .22s ease;width:100%;min-height:150px;"></textarea>
         </div>
-        <div id="fw-turnstile" style="display:flex;justify-content:center;"></div>
-        <div style="display:flex;justify-content:center;margin-top:8px;">
+        <div id="fw-turnstile" style="display:flex;justify-content:flex-start;"></div>
+        <div style="display:flex;justify-content:flex-start;margin-top:8px;">
           <button type="submit" id="fw-submit-btn" style="all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:10px;background:var(--brick);color:var(--cream);font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.16em;font-size:14px;font-weight:600;padding:17px 44px;border-radius:2px;border:1px solid var(--brick);transition:background .25s ease,transform .2s ease;" style-hover="background:var(--brick2);transform:translateY(-1px)">Send Us a Note</button>
         </div>
-        <p id="fw-form-error" role="alert" style="display:none;text-align:center;font-size:14px;line-height:1.6;color:#e07070;margin:0;">Something went wrong sending your message. Please try again or call the pub.</p>
+        <p id="fw-form-error" role="alert" style="display:none;text-align:left;font-size:14px;line-height:1.6;color:#e07070;margin:0;">Something went wrong sending your message. Please try again or call the pub.</p>
       </form>
     </div>
   </section>
