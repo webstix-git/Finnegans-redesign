@@ -10,6 +10,7 @@ body{
 }
 img{display:block;max-width:100%}
 a{color:inherit}
+input,textarea,select,button{font-family:inherit}
 ::selection{background:#ece1cb;color:#16100c}
 @keyframes fwKen{from{transform:scale(1.06)}to{transform:scale(1.16)}}
 @keyframes fwFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}

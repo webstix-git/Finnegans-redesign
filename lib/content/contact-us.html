@@ -143,9 +143,9 @@
         <h2 style="font-family:Anton,sans-serif;font-weight:400;text-transform:uppercase;line-height:1.05;font-size:clamp(28px,4vw,52px);color:var(--cream);">Send Us a Note</h2>
         <p style="font-size:15px;line-height:1.8;color:var(--muted);margin-top:16px;max-width:480px;margin-left:auto;margin-right:auto;">Use the form below, and someone from our team will get back to you as soon as we can.</p>
         <p style="font-size:14px;color:var(--muted);font-style:normal;margin-top:8px;">If your question is time-sensitive, calling the pub is always your best bet.</p>
-        <p style="font-size:13px;color:var(--muted);margin-top:12px;"><span style="color:var(--brick);">*</span> Required fields</p>
       </div>
-      <form id="fw-contact-form" action="https://ywwxvriolxwuqcwjaluh.supabase.co/functions/v1/form-submit/2d419e11-aa66-4c87-b160-da9311f03677" method="post" style="display:grid;gap:18px;" novalidate>
+      <form id="fw-contact-form" action="/api/contact" method="post" style="display:grid;gap:18px;" novalidate>
+        <p style="font-size:13px;color:var(--muted);margin:0;">Fields marked with an asterisk (<span style="color:var(--brick);">*</span>) are required.</p>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;">
           <div style="display:grid;gap:8px;">
             <label for="fw-contact-name" style="font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.16em;font-size:11px;color:var(--gold2);font-weight:500;">Name <span style="color:var(--brick);">*</span></label>
@@ -163,7 +163,7 @@
             <p id="fw-phone-hint" style="font-size:12px;line-height:1.5;color:var(--muted);margin:0;">Include country code, e.g. +1 417 869 1500</p>
             <p id="fw-phone-error" role="alert" style="display:none;font-size:12px;line-height:1.5;color:#e07070;margin:0;">Enter a valid international phone number starting with + and country code.</p>
           </div>
-          <div style="display:grid;gap:8px;">
+          <div style="display:grid;gap:8px;align-content:start;">
             <label for="fw-contact-subject" style="font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.16em;font-size:11px;color:var(--gold2);font-weight:500;">Subject</label>
             <input id="fw-contact-subject" type="text" name="subject" placeholder="What's this about?" style="background:var(--ink2);border:1px solid rgba(230,219,198,.22);border-radius:3px;padding:14px 16px;font-size:15px;color:var(--cream);outline:none;transition:border-color .22s ease;width:100%;">
           </div>
@@ -172,6 +172,7 @@
           <label for="fw-contact-message" style="font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.16em;font-size:11px;color:var(--gold2);font-weight:500;">Message</label>
           <textarea id="fw-contact-message" name="message" placeholder="Tell us what's on your mind..." rows="6" required style="background:var(--ink2);border:1px solid rgba(230,219,198,.22);border-radius:3px;padding:14px 16px;font-size:15px;color:var(--cream);outline:none;resize:vertical;transition:border-color .22s ease;width:100%;min-height:150px;"></textarea>
         </div>
+        <div id="fw-turnstile" style="display:flex;justify-content:center;"></div>
         <div style="display:flex;justify-content:center;margin-top:8px;">
           <button type="submit" id="fw-submit-btn" style="all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:10px;background:var(--brick);color:var(--cream);font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.16em;font-size:14px;font-weight:600;padding:17px 44px;border-radius:2px;border:1px solid var(--brick);transition:background .25s ease,transform .2s ease;" style-hover="background:var(--brick2);transform:translateY(-1px)">Send Us a Note</button>
         </div>
@@ -192,13 +193,13 @@
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
         <div style="background:var(--ink2);border:1px solid rgba(230,219,198,.14);border-radius:4px;padding:30px 24px;text-align:center;">
-          <div style="font-size:32px;margin-bottom:12px;">f</div>
+          <div style="display:flex;justify-content:center;margin-bottom:12px;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--gold2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path></svg></div>
           <div style="font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.14em;font-size:13px;color:var(--cream);font-weight:600;">Facebook</div>
           <div style="font-size:13px;color:var(--muted);margin-top:8px;line-height:1.6;">Specials, events &amp; updates</div>
           <a href="https://www.facebook.com/finneganssgf/" target="_blank" rel="noopener noreferrer" style="display:block;margin-top:16px;background:var(--brick);color:var(--cream);font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:600;padding:10px 16px;border-radius:2px;text-decoration:none;transition:background .22s ease;" style-hover="background:var(--brick2)">Follow Us</a>
         </div>
         <div style="background:var(--ink2);border:1px solid rgba(230,219,198,.14);border-radius:4px;padding:30px 24px;text-align:center;">
-          <div style="font-size:28px;margin-bottom:12px;">IG</div>
+          <div style="display:flex;justify-content:center;margin-bottom:12px;"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--gold2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></div>
           <div style="font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.14em;font-size:13px;color:var(--cream);font-weight:600;">Instagram</div>
           <div style="font-size:13px;color:var(--muted);margin-top:8px;line-height:1.6;">Moments from the pub</div>
           <a href="https://www.instagram.com/finneganssgf/" target="_blank" rel="noopener noreferrer" style="display:block;margin-top:16px;background:var(--brick);color:var(--cream);font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:600;padding:10px 16px;border-radius:2px;text-decoration:none;transition:background .22s ease;" style-hover="background:var(--brick2)">Follow Us</a>

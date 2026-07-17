@@ -5,6 +5,45 @@ import { INTERNATIONAL_PHONE_ERROR, isValidInternationalPhone } from '@/lib/phon
 
 export type EffectsMode = 'home' | 'scroll' | 'scroll-promo' | 'gallery' | 'faq' | 'contact';
 
+interface TurnstileApi {
+  render: (
+    el: HTMLElement,
+    opts: { sitekey: string; theme?: 'light' | 'dark' | 'auto' }
+  ) => string;
+  reset: (widgetId?: string) => void;
+  remove: (widgetId: string) => void;
+  getResponse: (widgetId?: string) => string | undefined;
+}
+
+declare global {
+  interface Window {
+    turnstile?: TurnstileApi;
+  }
+}
+
+let turnstileLoader: Promise<TurnstileApi> | null = null;
+
+function loadTurnstile(): Promise<TurnstileApi> {
+  if (window.turnstile) return Promise.resolve(window.turnstile);
+  if (!turnstileLoader) {
+    turnstileLoader = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+      script.async = true;
+      script.onload = () => {
+        if (window.turnstile) resolve(window.turnstile);
+        else reject(new Error('Turnstile failed to initialize'));
+      };
+      script.onerror = () => {
+        turnstileLoader = null;
+        reject(new Error('Failed to load Turnstile script'));
+      };
+      document.head.appendChild(script);
+    });
+  }
+  return turnstileLoader;
+}
+
 function setupContactForm() {
   document.querySelectorAll('#fw-faqs details').forEach((d) => {
     (d as HTMLDetailsElement).open = true;
@@ -35,6 +74,44 @@ function setupContactForm() {
   const phoneError = document.getElementById('fw-phone-error');
   const formError = document.getElementById('fw-form-error');
   const submitLabel = btn?.textContent ?? 'Send Us a Note';
+  const defaultFormError = formError?.textContent ?? '';
+
+  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  const turnstileContainer = document.getElementById('fw-turnstile');
+  const turnstileEnabled = Boolean(turnstileSiteKey && turnstileContainer);
+  let turnstileWidgetId: string | null = null;
+  let turnstileDisposed = false;
+
+  if (turnstileEnabled && turnstileSiteKey && turnstileContainer) {
+    loadTurnstile()
+      .then((turnstile) => {
+        if (turnstileDisposed) return;
+        turnstileWidgetId = turnstile.render(turnstileContainer, {
+          sitekey: turnstileSiteKey,
+          theme: 'dark',
+        });
+      })
+      .catch(() => {
+        // Widget unavailable; server-side verification will still reject if required.
+      });
+    cleanups.push(() => {
+      turnstileDisposed = true;
+      if (turnstileWidgetId !== null) {
+        try {
+          window.turnstile?.remove(turnstileWidgetId);
+        } catch {
+          // widget already gone
+        }
+        turnstileWidgetId = null;
+      }
+    });
+  }
+
+  const showFormError = (message?: string) => {
+    if (!formError) return;
+    formError.textContent = message ?? defaultFormError;
+    formError.style.display = 'block';
+  };
 
   const defaultBorder = 'rgba(230,219,198,.22)';
   const errorBorder = '#e07070';
@@ -83,6 +160,14 @@ function setupContactForm() {
 
       if (!formEl.reportValidity()) return;
 
+      if (turnstileEnabled) {
+        const token = window.turnstile?.getResponse(turnstileWidgetId ?? undefined) ?? '';
+        if (!token) {
+          showFormError('Please complete the verification challenge before sending.');
+          return;
+        }
+      }
+
       setSubmitting(true);
 
       try {
@@ -98,7 +183,10 @@ function setupContactForm() {
         window.location.href = '/thank-you';
       } catch {
         setSubmitting(false);
-        if (formError) formError.style.display = 'block';
+        if (turnstileEnabled && turnstileWidgetId !== null) {
+          window.turnstile?.reset(turnstileWidgetId);
+        }
+        showFormError();
       }
     };
     form.addEventListener('submit', onSubmit);
