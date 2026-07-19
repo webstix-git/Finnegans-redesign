@@ -1,0 +1,77 @@
+/* Metric-matched fallbacks paint immediately; webfonts swap in with minimal layout shift */
+
+@font-face {
+  font-family: 'Anton';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Arial Bold'), local('Arial');
+  size-adjust: 84%;
+  ascent-override: 102%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Anton';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/60cfbb76-24c6-482a-9337-d08603d11be9.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 300 600;
+  src: local('Segoe UI'), local('Helvetica Neue'), local('Arial');
+  size-adjust: 101%;
+  ascent-override: 94%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 300 600;
+  font-display: swap;
+  src: url('/assets/9ba0e864-716b-40d4-8595-b60f1c0f0458.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: italic;
+  font-weight: 300 400;
+  src: local('Segoe UI Italic'), local('Arial Italic');
+  size-adjust: 101%;
+  ascent-override: 94%;
+  descent-override: 24%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: italic;
+  font-weight: 300 400;
+  font-display: swap;
+  src: url('/assets/4848ff19-302c-4856-83eb-2fbded1c949c.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 300 700;
+  src: local('Arial Narrow Bold'), local('Arial Narrow'), local('Arial');
+  size-adjust: 88%;
+  ascent-override: 108%;
+  descent-override: 26%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('/assets/d9761209-5bfe-421b-a386-02654d4f1fd8.woff2') format('woff2');
+}
