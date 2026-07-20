@@ -941,30 +941,13 @@ p .fw-menu-editable {
 }
 
 .fw-login-logo {
-  width: 72px;
-  height: 72px;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
   border: 2px solid rgba(236, 225, 203, 0.45);
   display: block;
-  margin: 0 auto 20px;
+  margin: 0 auto 28px;
   object-fit: cover;
-}
-
-.fw-login-title {
-  font-family: Anton, sans-serif;
-  font-size: 28px;
-  font-weight: 400;
-  text-transform: uppercase;
-  text-align: center;
-  color: #f2e7d2;
-  margin: 0 0 6px;
-}
-
-.fw-login-sub {
-  text-align: center;
-  font-size: 13px;
-  color: #bca988;
-  margin: 0 0 28px;
 }
 
 .fw-login-field {

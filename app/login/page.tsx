@@ -12,7 +12,7 @@ import '@/components/menu-editor/editor-ui.css';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -46,10 +46,10 @@ export default function LoginPage() {
       const res = await fetch('/api/menu-auth', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), password: password.trim() }),
+        body: JSON.stringify({ username: username.trim(), password: password.trim() }),
       });
       const json = (await res.json()) as { token?: string; error?: string };
-      if (!res.ok) throw new Error(json.error || 'Invalid email or password');
+      if (!res.ok) throw new Error(json.error || 'Invalid username or password');
       if (!json.token) throw new Error('No session token received');
       setStoredAuth(json.token);
       router.replace('/menu-editor');
@@ -68,21 +68,20 @@ export default function LoginPage() {
           alt="Finnegan's Wake"
           className="fw-login-logo"
         />
-        <h1 className="fw-login-title">Admin Editor</h1>
 
         {error ? <div className="fw-login-error">{error}</div> : null}
 
         <form onSubmit={handleSubmit} autoComplete="off">
           <div className="fw-login-field">
-            <label htmlFor="fw-admin-email">Email</label>
+            <label htmlFor="fw-admin-username">Username</label>
             <input
-              id="fw-admin-email"
-              name="fw-admin-email"
+              id="fw-admin-username"
+              name="fw-admin-username"
               type="text"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              autoComplete="off"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your username"
+              autoComplete="username"
               autoCorrect="off"
               autoCapitalize="off"
               spellCheck={false}
@@ -98,7 +97,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
-              autoComplete="new-password"
+              autoComplete="current-password"
               required
             />
           </div>

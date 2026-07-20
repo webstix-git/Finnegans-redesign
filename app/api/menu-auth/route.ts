@@ -14,15 +14,19 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const body = (await req.json()) as { email?: string; password?: string };
-    const email = body.email?.trim() ?? '';
+    const body = (await req.json()) as {
+      username?: string;
+      email?: string;
+      password?: string;
+    };
+    const username = (body.username ?? body.email)?.trim() ?? '';
     const password = body.password?.trim() ?? '';
 
-    if (!validateCredentials(email, password)) {
-      return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
+    if (!validateCredentials(username, password)) {
+      return NextResponse.json({ error: 'Invalid username or password' }, { status: 401 });
     }
 
-    const token = createSessionToken(email, password);
+    const token = createSessionToken(username, password);
     return NextResponse.json({ ok: true, token });
   } catch {
     return NextResponse.json({ error: 'Login failed' }, { status: 500 });
