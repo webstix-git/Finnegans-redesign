@@ -96,7 +96,8 @@ export function LivePromotionsEditor({ baseHtml, initialData }: LivePromotionsEd
       contentRef.current,
       toolbarRef.current,
       saveStatus,
-      saveError
+      saveError,
+      { scheduleOnly: true }
     );
   }, [saveStatus, saveError]);
 

@@ -46,12 +46,30 @@ export function syncEditorToolbarBelowBreadcrumb(
   }
 }
 
+/** Marks the page root so sticky toolbar works (overflow-x:hidden breaks sticky). */
+export function prepareEditorPageChrome(
+  root: HTMLElement | null,
+  options?: { scheduleOnly?: boolean }
+): void {
+  if (!root) return;
+
+  const pageRoot =
+    root.querySelector<HTMLElement>(':scope > div') ??
+    (root.firstElementChild instanceof HTMLElement ? root.firstElementChild : null);
+  if (!pageRoot) return;
+
+  pageRoot.classList.add('fw-editor-mode');
+  pageRoot.classList.toggle('fw-promo-editor-mode', Boolean(options?.scheduleOnly));
+}
+
 export function syncEditorChromeBelowBreadcrumb(
   root: HTMLElement | null,
   toolbar: HTMLElement | null,
   status: string,
-  isError: boolean
+  isError: boolean,
+  options?: { scheduleOnly?: boolean }
 ): void {
+  prepareEditorPageChrome(root, options);
   syncEditorToolbarBelowBreadcrumb(root, toolbar);
   syncEditorStatusBelowBreadcrumb(root, status, isError, toolbar);
 }
