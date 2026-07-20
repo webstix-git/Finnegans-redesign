@@ -516,9 +516,10 @@ p .fw-menu-editable {
   color: #ffb4a8;
 }
 
-/* Editor page: overflow-x:hidden on page roots breaks position:sticky */
+/* Editor page: overflow-x:hidden on page roots clips fixed/sticky chrome */
 .fw-editor-mode {
   overflow-x: visible !important;
+  overflow-y: visible !important;
 }
 
 /* Promotions editor: only show The Class Schedule (+ chrome) */
@@ -530,17 +531,26 @@ p .fw-menu-editable {
   margin-top: var(--fw-header-offset);
 }
 
-/* Editor toolbar below breadcrumb */
+/* Placeholder keeps layout when toolbar locks under the site header */
+.fw-editor-toolbar-sentinel {
+  height: 0;
+  pointer-events: none;
+}
+
+/* Editor toolbar below breadcrumb — sticks under fixed site header on scroll */
 .fw-editor-toolbar-bar {
   background: var(--ink2);
   border-bottom: 1px solid rgba(230, 219, 198, 0.1);
-  position: sticky;
-  top: var(--fw-header-offset);
+  position: relative;
   z-index: 49;
+  width: 100%;
 }
 
-body:has(#fw-header.fw-header-scrolled) .fw-editor-toolbar-bar {
-  top: calc(var(--fw-logo-scrolled) + 28px);
+.fw-editor-toolbar-bar--stuck {
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 49;
 }
 
 .fw-editor-toolbar {
