@@ -5,8 +5,9 @@
 
 .fw-menu-editable--card .fw-item-edit-btn {
   position: absolute;
-  top: 8px;
-  right: 0;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
   z-index: 2;
 }
 
@@ -49,9 +50,14 @@
   transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
 }
 
+#salads .fw-menu-editable--card,
+#mains .fw-menu-editable--card,
+#drafts .fw-menu-editable--card {
+  padding-right: 84px;
+}
+
 #salads p .fw-menu-editable--card {
   display: inline-block;
-  padding-right: 64px;
 }
 
 #drafts li.fw-menu-editable--card {
@@ -64,7 +70,7 @@
 }
 
 .fw-menu-editable--card > div[style*='display:grid'] {
-  padding-right: 72px;
+  padding-right: 84px;
 }
 
 .fw-menu-add-bar {
@@ -514,6 +520,9 @@ p .fw-menu-editable {
 .fw-editor-toolbar-bar {
   background: var(--ink2);
   border-bottom: 1px solid rgba(230, 219, 198, 0.1);
+  position: sticky;
+  top: var(--fw-header-offset);
+  z-index: 49;
 }
 
 .fw-editor-toolbar {
@@ -531,7 +540,7 @@ p .fw-menu-editable {
 
 .fw-editor-toolbar-label {
   font-family: Oswald, sans-serif;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -542,7 +551,7 @@ p .fw-menu-editable {
 
 .fw-editor-toolbar-btn {
   font-family: Oswald, sans-serif;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
